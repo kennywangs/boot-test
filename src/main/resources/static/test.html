@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jsonp</title>
+	<script src="/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+	<button id="jsonp" type="submit">
+		jsonp test
+	</button>
+	<button id="send" type="submit">
+		normal test
+	</button>
+	<script type="text/javascript">
+		$("#jsonp").click(function() {
+			$.ajax({
+				url:"http://localhost:8082/jsonp/testJsonp",
+				dataType:'jsonp',
+				jsonp:"callback",
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader("appId","3333");
+				},
+				success: function (data) {
+					console.log(data.msg);
+				},
+				error: function(data){ console.log(data); }
+			});
+		});
+		$("#send").click(function() {
+			$.ajax({
+				url:"http://localhost:8082/test/hello",
+				dataType:'json',
+				headers: {"appId":"3333"},
+				success: function (data) {
+					console.log(data.msg);
+				}
+			});
+		});
+	</script>
+</body>
+</html>
