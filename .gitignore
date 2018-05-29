@@ -1,5 +1,6 @@
 ### ignore this file ###
 /target/
+/log/
 
 !.mvn/wrapper/maven-wrapper.jar
 
