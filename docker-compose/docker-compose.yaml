@@ -1,0 +1,28 @@
+version: '3'
+services:
+  mysql:
+    container_name: v-mysql
+    image: docker.io/mysql:5.7.19
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;' --innodb-flush-log-at-trx-commit=0
+    volumes:
+      - "/data/mysql/db:/var/lib/mysql"
+      - "/data/mysql/conf:/etc/mysql/conf.d"
+  bootapp:
+    restart: always
+    build: ./bootapp
+    working_dir: /bootapp
+    volumes:
+      - ./bootapp:/bootapp
+      - ~/.m2:/root/.m2
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    command: mvn clean spring-boot:run -Dspring-boot.run.profiles=docker
+    
