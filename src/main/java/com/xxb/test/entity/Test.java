@@ -11,6 +11,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 @Entity
 @javax.persistence.Table(name = "xxb_test")
 public class Test implements Serializable {

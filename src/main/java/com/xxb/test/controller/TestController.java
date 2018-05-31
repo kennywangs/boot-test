@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.xxb.base.BaseController;
 import com.xxb.base.ServiceResult;
 import com.xxb.test.entity.Test;
 import com.xxb.test.repository.TestRepository;
+import com.xxb.util.jackson.Djson;
+import com.xxb.util.jackson.JacksonJsonUtil;
 
 @RestController
 @RequestMapping("/test")
@@ -48,6 +51,12 @@ public class TestController extends BaseController {
 	public String get(String id){
 		Test e = repo.findById(id).get();
 		return handelResult("get by id succussful.", e);
+	}
+	
+	@RequestMapping(value = "/getview", produces=MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.GET)
+	public String getview(String id) throws JsonProcessingException{
+		Test e = repo.findById(id).get();
+		return JacksonJsonUtil.toJson(e, new Djson(Test.class,null,"fid"));
 	}
 	
 	@RequestMapping(value = "/gettest", produces=MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.GET)
