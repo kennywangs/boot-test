@@ -11,7 +11,7 @@ public class JsonUtils {
 	public static final Gson dateGson = new GsonBuilder().registerTypeAdapter(Date.class, new GsonDateTypeAdapter()).create();
 	
 	public static String toJson(Object obj) {
-		return simpleGson.toJson(obj);
+		return dateGson.toJson(obj);
 	}
 	
 	public static <T> T parseJson(String json,Class<T> clazz) {
