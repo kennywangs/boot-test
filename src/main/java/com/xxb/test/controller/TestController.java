@@ -49,5 +49,11 @@ public class TestController extends BaseController {
 		Test e = repo.findById(id).get();
 		return handelResult("get by id succussful.", e);
 	}
+	
+	@RequestMapping(value = "/gettest", produces=MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.GET)
+	public Test getTest(String id){
+		Test e = repo.findById(id).get();
+		return e;
+	}
 
 }

@@ -10,7 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.xxb.**.config","com.xxb.**.service" })
+//@ComponentScan(basePackages = { "com.xxb.**.config","com.xxb.**.service" })
+@ComponentScan(basePackages = { "com.xxb" })
 @EnableAutoConfiguration(exclude = { MultipartAutoConfiguration.class})
 @EnableTransactionManagement
 public class BootTestApplication {

@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import com.google.gson.internal.bind.util.ISO8601Utils;
 
 public class ISO8601DateEditor extends PropertyEditorSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ISO8601DateEditor.class);

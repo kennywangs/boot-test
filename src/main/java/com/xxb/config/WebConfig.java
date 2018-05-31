@@ -28,7 +28,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
-import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -41,10 +40,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.xxb.util.ISO8601DateFormatEx;
 
-@Configuration
-@ComponentScan(basePackages = "com.xxb.**.controller", useDefaultFilters = false, includeFilters = {
-		@ComponentScan.Filter(type = FilterType.ANNOTATION, value = { Controller.class, RestController.class }),
-		@ComponentScan.Filter(type = FilterType.ANNOTATION, value = ControllerAdvice.class) })
+//@Configuration
+//@ComponentScan(basePackages = "com.xxb.**.controller", useDefaultFilters = false, includeFilters = {
+//		@ComponentScan.Filter(type = FilterType.ANNOTATION, value = { Controller.class, RestController.class }),
+//		@ComponentScan.Filter(type = FilterType.ANNOTATION, value = ControllerAdvice.class) })
 public class WebConfig implements WebMvcConfigurer  {
 
 	private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
@@ -62,18 +61,6 @@ public class WebConfig implements WebMvcConfigurer  {
 		initializer.setPropertyEditorRegistrar(register);
 		mappingHandlerAdapter.setWebBindingInitializer(initializer);
 	}
-	
-//	@Bean("configurableWebBindingInitializer")
-//	public ConfigurableWebBindingInitializer configurableWebBindingInitializer() {
-//		logger.info("configurableWebBindingInitializer init-------");
-//		ConfigurableWebBindingInitializer initializer = applicationContext.getBean(ConfigurableWebBindingInitializer.class);
-//		if (initializer==null) {
-//			initializer = new ConfigurableWebBindingInitializer();
-//		}
-//		MyPropertyEditorRegistrar register = new MyPropertyEditorRegistrar();
-//		initializer.setPropertyEditorRegistrar(register);
-//		return initializer;
-//	}
 	
 	@Bean("servletHandlerAdapter")
 	public HandlerAdapter servletHandlerAdapter() {
