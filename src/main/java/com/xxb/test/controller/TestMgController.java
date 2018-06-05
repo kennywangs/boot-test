@@ -20,12 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Lists;
 import com.xxb.base.BaseController;
+import com.xxb.base.ServiceResult;
+import com.xxb.test.entity.Test;
 import com.xxb.test.entity.TestMg;
 import com.xxb.test.entity.TestMgGroup;
 import com.xxb.test.repository.TestMgGroupRepository;
 import com.xxb.test.repository.TestMgRepository;
+import com.xxb.util.JsonUtils;
+import com.xxb.util.jackson.Djson;
+import com.xxb.util.jackson.JacksonJsonUtil;
 
 @RestController
 @RequestMapping("/testmg")
@@ -53,21 +59,26 @@ public class TestMgController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/get", produces=MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.GET)
-	public String get(String id){
+	public String get(String id) throws JsonProcessingException{
 		TestMg e = repo.findById(new ObjectId(id)).get();
 		DateTime startTime=new DateTime(2017, 9, 1, 0, 0,0);
 		Aggregation aggregation = Aggregation.newAggregation(
 //				Aggregation.project("fid", "fname", "fdate"),
 				Aggregation.match(
                         Criteria.where("fdate").gte(startTime.toDate())),
-				Aggregation.lookup("test_group", "group_id", "_id", "groupinfo")
+				Aggregation.lookup("test_group", "group_id", "uuid", "groupinfo"),
 //				Aggregation.unwind("groupinfo"),
-//				Aggregation.project("fid", "fname", "fdate", "groupinfo.name")
-//				Aggregation.match(
-//                        Criteria.where("groupinfo.name").is("中国")),
+				Aggregation.match(
+                        Criteria.where("groupinfo.name").is("美国"))
+//				Aggregation.project("fid", "fname", "fdate", "groupinfo")
 		);
 		AggregationResults<TestMg> result = template.aggregate(aggregation, "testmg", TestMg.class);
-		return handelResult("get by id succussful."+result.getRawResults().toJson(), result.getMappedResults());
+//		return handelResult("get by id succussful."+result.getRawResults().toJson(), result.getMappedResults());
+//		return handelResult("get by id succussful.", result.getMappedResults());
+		ServiceResult ret = new ServiceResult();
+		ret.setMsg("get by id succussful.");
+		ret.setData(result.getMappedResults());
+		return JacksonJsonUtil.toJson(ret, new Djson(TestMg.class,null,"_id,group_id"));
 	}
 	
 	@RequestMapping(value = "/delete", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)

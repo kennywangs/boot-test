@@ -1,4 +1,4 @@
-package com.xxb.util;
+package com.xxb.util.Date;
 
 import java.beans.PropertyEditorSupport;
 import java.text.ParseException;

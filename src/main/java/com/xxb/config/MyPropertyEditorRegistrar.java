@@ -8,7 +8,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.support.WebBindingInitializer;
 
-import com.xxb.util.ISO8601DateEditor;
+import com.xxb.util.Date.ISO8601DateEditor;
 
 public class MyPropertyEditorRegistrar implements PropertyEditorRegistrar, WebBindingInitializer {
 

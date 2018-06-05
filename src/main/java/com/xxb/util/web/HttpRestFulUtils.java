@@ -1,4 +1,4 @@
-package com.xxb.util;
+package com.xxb.util.web;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.xxb.util.Date.GsonDateTypeAdapter;
 
 public class JsonUtils {
 	

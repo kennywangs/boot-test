@@ -2,6 +2,7 @@ package com.xxb.util.jackson;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,6 +29,7 @@ public class CustomerJsonSerializer {
     }
 
     public String toJson(Object object) throws JsonProcessingException {
+    	mapper.setSerializationInclusion(Include.NON_NULL);
         mapper.setFilterProvider(jacksonFilter);
         return mapper.writeValueAsString(object);
     }

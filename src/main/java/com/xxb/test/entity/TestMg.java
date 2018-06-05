@@ -18,8 +18,17 @@ public class TestMg implements Serializable {
     private String fname;
     private Date fdate;
     private String group_id;
+    private TestMgGroup groupinfo;
     
-    public TestMg(String _id, String fid, String fname, Date fdate) {
+	public TestMgGroup getGroupinfo() {
+		return groupinfo;
+	}
+
+	public void setGroupinfo(TestMgGroup groupinfo) {
+		this.groupinfo = groupinfo;
+	}
+
+	public TestMg(String _id, String fid, String fname, Date fdate) {
     	this._id = _id;
         this.fid = fid;
         this.fname = fname;
