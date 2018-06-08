@@ -69,7 +69,7 @@ public class TestMgController extends BaseController {
 				Aggregation.lookup("test_group", "group_id", "uuid", "groupinfo"),
 //				Aggregation.unwind("groupinfo"),
 				Aggregation.match(
-                        Criteria.where("groupinfo.name").is("美国"))
+                        Criteria.where("groupinfo.name").is("中国"))
 //				Aggregation.project("fid", "fname", "fdate", "groupinfo")
 		);
 		AggregationResults<TestMg> result = template.aggregate(aggregation, "testmg", TestMg.class);
