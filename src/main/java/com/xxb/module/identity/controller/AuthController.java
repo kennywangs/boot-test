@@ -24,32 +24,32 @@ public class AuthController extends BaseController {
 	@RequestMapping(value="/role/save",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String saveRole(@RequestBody Role role) {
 		role = authService.saveRole(role);
-		return handelResult("成功", role);
+		return handleResult("成功", role);
 	}
 	
 	@RequestMapping(value="/auth/save",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String saveAuth(@RequestBody Authority auth) {
 		auth = authService.saveAuth(auth);
-		return handelResult("成功", auth);
+		return handleResult("成功", auth);
 	}
 	
 	@RequestMapping(value="/auth/listbyuser",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listAuthByUser(String userId) {
 		Collection<Authority> auths = authService.getAuthsByUser(userId);
-		return handelResult("成功", auths);
+		return handleResult("成功", auths);
 	}
 	
 	@RequestMapping(value="/auth/listbyrole",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listAuthByRole(String roleId) {
 		Collection<Authority> auths = authService.getAuthsByRole(roleId);
-		return handelResult("成功", auths);
+		return handleResult("成功", auths);
 	}
 	
 	@RequestMapping(value="/role/listbyuser",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listRoleByUser(String userId) {
 		Collection<Role> roles = authService.getRolesByUser(userId);
 		Djson djson = new Djson(Role.class,null,"auths");
-		return handelJsonResult("成功", roles, djson);
+		return handleJsonResult("成功", roles, djson);
 	}
 
 }

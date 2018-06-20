@@ -17,6 +17,6 @@ public class WeixinAction extends BaseController {
 	public String getUserData(String code) {
 		String url = String.format(Jscode2session, "wxc87e524c87d97459", "1b75ec7546450430146889c7a324c450", code);
 		String res = WeixinUtils.httpsRequestToString(url, "GET", null);
-		return handelResult("获取成功", res);
+		return handleResult("获取成功", res);
 	}
 }

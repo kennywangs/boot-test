@@ -38,19 +38,19 @@ public class TestController extends BaseController {
 	@RequestMapping(value = "/save",produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.POST)
 	public String save(@RequestBody Test test){
 		Test e = repo.save(test);
-		return handelResult("save succussful.", e);
+		return handleResult("save succussful.", e);
 	}
 	
 	@RequestMapping(value = "/list",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String list(@PageableDefault(value = 10, sort = { "fid" }, direction = Sort.Direction.DESC) Pageable pageable){
 		Page<Test> ret = repo.findAll(pageable);
-		return handelPageResult("list page succussful.", ret);
+		return handlePageResult("list page succussful.", ret);
 	}
 	
 	@RequestMapping(value = "/get", produces=MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.GET)
 	public String get(String id){
 		Test e = repo.findById(id).get();
-		return handelResult("get by id succussful.", e);
+		return handleResult("get by id succussful.", e);
 	}
 	
 	@RequestMapping(value = "/getview", produces=MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.GET)

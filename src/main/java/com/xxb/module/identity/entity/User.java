@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -208,6 +209,40 @@ public class User implements Serializable {
 	}
 	
 	// -------------- domain ------------------
+	
+	@Transient
+	private Set<String> auths;
+	
+	@Transient
+	private String token;
+	
+	@Transient
+	private Long ttl;
+	
+	public Long getTtl() {
+		return ttl;
+	}
+
+	public void setTtl(Long ttl) {
+		this.ttl = ttl;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Set<String> getAuths() {
+		return auths;
+	}
+
+	public void setAuths(Set<String> auths) {
+		this.auths = auths;
+	}
+	
 	public User excludeField(User user) {
 		user.setPassword("");
 		user.setRoles(null);

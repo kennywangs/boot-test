@@ -109,7 +109,7 @@ public class UserService extends BaseService<User> {
         };
     }
 
-	public void login(JSONObject param) {
+	public User login(JSONObject param) {
 		String name = param.getString("name");
 		User user = repo.queryTopEntityByNameEqualsOrMobileEquals(name, name);
 		if (user==null) {
@@ -119,6 +119,7 @@ public class UserService extends BaseService<User> {
 		if (!user.getPassword().equals(md5)) {
 			throw new ProjectException("密码不正确");
 		}
+		return user;
 	}
 
 	public void modifyPw(JSONObject param) {

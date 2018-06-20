@@ -23,19 +23,19 @@ public class GroupController extends BaseController {
 	@RequestMapping(value="/save")
 	public String saveGroup(@RequestBody Group group) {
 		group = repo.save(group);
-		return handelResult("成功", group);
+		return handleResult("成功", group);
 	}
 	
 	@RequestMapping(value="/view")
 	public String viewGroup(String id) {
 		Group group = repo.findById(id).get();
-		return handelResult("成功", group);
+		return handleResult("成功", group);
 	}
 	
 	@RequestMapping(value="/list")
 	public String listGroup(@PageableDefault(value = 10, sort = { "name" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<Group> groups = repo.findAll(pageable);
-		return handelResult("成功", groups);
+		return handleResult("成功", groups);
 	}
 
 }

@@ -49,13 +49,13 @@ public class TestMgController extends BaseController {
 	@RequestMapping(value = "/save",produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.POST)
 	public String save(@RequestBody TestMg test){
 		TestMg e = repo.save(test);
-		return handelResult("save succussful.", e);
+		return handleResult("save succussful.", e);
 	}
 	
 	@RequestMapping(value = "/list",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String list(@PageableDefault(value = 10, sort = { "fid" }, direction = Sort.Direction.DESC) Pageable pageable){
 		Page<TestMg> ret = repo.findAll(pageable);
-		return handelPageResult("list page succussful.", ret);
+		return handlePageResult("list page succussful.", ret);
 	}
 	
 	@RequestMapping(value = "/get", produces=MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.GET)
@@ -73,8 +73,8 @@ public class TestMgController extends BaseController {
 //				Aggregation.project("fid", "fname", "fdate", "groupinfo")
 		);
 		AggregationResults<TestMg> result = template.aggregate(aggregation, "testmg", TestMg.class);
-//		return handelResult("get by id succussful."+result.getRawResults().toJson(), result.getMappedResults());
-//		return handelResult("get by id succussful.", result.getMappedResults());
+//		return handleResult("get by id succussful."+result.getRawResults().toJson(), result.getMappedResults());
+//		return handleResult("get by id succussful.", result.getMappedResults());
 		ServiceResult ret = new ServiceResult();
 		ret.setMsg("get by id succussful.");
 		ret.setData(result.getMappedResults());
@@ -84,7 +84,7 @@ public class TestMgController extends BaseController {
 	@RequestMapping(value = "/delete", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String delete(){
 		repo.deleteAll();
-		return handelResult("delete succussful.");
+		return handleResult("delete succussful.");
 	}
 	
 	@RequestMapping(value = "/gen", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -94,7 +94,7 @@ public class TestMgController extends BaseController {
 		TestMgGroup group = new TestMgGroup(null,UUID.randomUUID().toString(),"中国");
 		list.add(group);
 		groupRepo.saveAll(list);
-		return handelResult("genarate succussful.",groupRepo.findAll());
+		return handleResult("genarate succussful.",groupRepo.findAll());
 	}
 
 }
