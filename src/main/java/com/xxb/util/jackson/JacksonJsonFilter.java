@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.proxy.HibernateProxy;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -21,6 +23,10 @@ public class JacksonJsonFilter extends FilterProvider{
 
     Map<Class<?>, Set<String>> includeMap = new HashMap<>();
     Map<Class<?>, Set<String>> filterMap = new HashMap<>();
+    
+    public JacksonJsonFilter() {
+    	 addToMap(filterMap, HibernateProxy.class, new String[]{"handler","hibernateLazyInitializer"});
+    }
 
     public void include(Class<?> type, String[] fields) {
         addToMap(includeMap, type, fields);
@@ -49,7 +55,11 @@ public class JacksonJsonFilter extends FilterProvider{
             @Override
             public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider prov, PropertyWriter writer)
                     throws Exception {
-                if (apply(pojo.getClass(), writer.getName())) {
+            	Class<?> type = pojo.getClass();
+            	if (applyHibernate(writer.getName())) {
+            		return;
+            	}
+                if (apply(type, writer.getName())) {
                     writer.serializeAsField(pojo, jgen, prov);
                 } else if (!jgen.canOmitFields()) {
                     writer.serializeAsOmittedField(pojo, jgen, prov);
@@ -66,6 +76,14 @@ public class JacksonJsonFilter extends FilterProvider{
         } else if (filterFields != null && !filterFields.contains(name)) {
             return true;
         } else if (includeFields == null && filterFields == null) {
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean applyHibernate(String name) {
+        Set<String> filterFields = filterMap.get(HibernateProxy.class);
+        if (filterFields.contains(name)) {
             return true;
         }
         return false;

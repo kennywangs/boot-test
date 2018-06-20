@@ -1,5 +1,7 @@
 package com.xxb.util.jackson;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -31,6 +33,7 @@ public class CustomerJsonSerializer {
     public String toJson(Object object) throws JsonProcessingException {
     	mapper.setSerializationInclusion(Include.NON_NULL);
         mapper.setFilterProvider(jacksonFilter);
+        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         return mapper.writeValueAsString(object);
     }
     public void filter(JSON json) {

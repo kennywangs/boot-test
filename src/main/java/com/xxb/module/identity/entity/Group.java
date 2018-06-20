@@ -26,9 +26,15 @@ public class Group implements Serializable {
 	@org.hibernate.annotations.Type(type="org.hibernate.type.StringType")
 	private String id;
 	
-	@Column(name="name", nullable=false)
+	@Column(name = "name", nullable = false, unique = true)
 	@org.hibernate.annotations.Type(type="org.hibernate.type.StringType")
 	private String name;
+	
+	@Column(name = "group_no")
+	@org.hibernate.annotations.Type(type = "org.hibernate.type.StringType")
+	private String no;
+	
+	private Integer type;
 	
 	@Column(name="modify_date")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -38,14 +44,6 @@ public class Group implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 	
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -61,7 +59,31 @@ public class Group implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getNo() {
+		return no;
+	}
 
+	public void setNo(String no) {
+		this.no = no;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+	
 	public Date getModifyDate() {
 		return modifyDate;
 	}

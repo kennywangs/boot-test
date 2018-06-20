@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xxb.module.identity.entity.User;
 import com.xxb.util.web.MyPage;
 
 public abstract class BaseService<T> {
@@ -85,6 +86,13 @@ public abstract class BaseService<T> {
 			value = new Timestamp(date.getTime());
 		}
 		queryParam.put(key, value);
+	}
+	
+	protected User getCurrentUser() {
+		User user = new User();
+		user.setId("09edbc10-76de-48cc-a1d2-f7d029d5b173");
+		user.setType(User.USER_TYPE_SUPER);
+		return user;
 	}
 
 }

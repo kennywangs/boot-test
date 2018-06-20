@@ -1,10 +1,15 @@
 package com.xxb.base;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.xxb.util.JsonUtils;
+import com.xxb.util.jackson.Djson;
+import com.xxb.util.jackson.JacksonJsonUtil;
 
 public abstract class BaseController {
 	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
@@ -65,6 +70,30 @@ public abstract class BaseController {
 			result.setMsg(msg);
 			result.setErrorCode("UNKNOWN");
 			logger.error(msg);
+		}
+	}
+	
+	public <T> String handelJsonPageResult(String msg, Page<T> page,Djson... djson) {
+		ServiceResult result = new ServiceResult();
+		result.setTotalNumber(page.getTotalElements());
+		result.setTotalPage(page.getTotalPages());
+		result.setMsg(msg);
+		result.setData(page.getContent());
+		try {
+			return JacksonJsonUtil.toJson(result, Arrays.asList(djson));
+		} catch (JsonProcessingException e) {
+			return handelError("获取失败!",e);
+		}
+	}
+	
+	public String handelJsonResult(String msg, Object props,Djson... djson) {
+		ServiceResult result = new ServiceResult();
+		result.setMsg(msg);
+		result.setData(props);
+		try {
+			return JacksonJsonUtil.toJson(result, Arrays.asList(djson));
+		} catch (JsonProcessingException e) {
+			return handelError("获取失败!",e);
 		}
 	}
 }
