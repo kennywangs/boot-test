@@ -88,11 +88,4 @@ public abstract class BaseService<T> {
 		queryParam.put(key, value);
 	}
 	
-	protected User getCurrentUser() {
-		User user = new User();
-		user.setId("09edbc10-76de-48cc-a1d2-f7d029d5b173");
-		user.setType(User.USER_TYPE_SUPER);
-		return user;
-	}
-
 }

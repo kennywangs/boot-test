@@ -1,18 +1,22 @@
 package com.xxb.base;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.servlet.HandlerMapping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.xxb.module.identity.entity.User;
 import com.xxb.module.identity.service.UserService;
 import com.xxb.util.JsonUtils;
 import com.xxb.util.TokenUtils;
@@ -33,6 +37,12 @@ public abstract class BaseController {
 	
 	@Autowired
 	protected Environment env;
+	
+	@SuppressWarnings("unchecked")
+	protected Map<String, String> resolvePathVariables(HttpServletRequest request) {
+        return (Map<String, String>) request
+            .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+    }
 
 	public <T> String handlePageResult(String msg, Page<T> page) {
 		ServiceResult result = new ServiceResult();
@@ -131,6 +141,23 @@ public abstract class BaseController {
 		return null;
 	}
 	
+	protected String getHeaderToken(HttpServletRequest request) {
+		String auth = request.getHeader("Authorization");
+		if (StringUtils.isEmpty(auth)) {
+			return null;
+		}
+		String headToken = auth.replace("bearer ", "");
+		return headToken;
+	}
+	
+	protected String getReqToken(HttpServletRequest request) {
+		String reqToken = getCookieToken(request);
+		if (StringUtils.isEmpty(reqToken)) {
+			reqToken = getHeaderToken(request);
+		}
+		return reqToken;
+	}
+	
 	protected Cookie getCookie(HttpServletRequest request, String name) {
 		Cookie[] cookies = request.getCookies();
 		if (null == cookies) {
@@ -169,7 +196,24 @@ public abstract class BaseController {
 		return claims;
 	}
 	
+	protected Claims getClaims(String token) {
+		Claims claims = TokenUtils.parseJWT(token, env.getProperty("jwt.security"));
+		if (claims==null) {
+			throw new ProjectException("您需要重新登录！", ProjectException.NeedLogin);
+		}
+		return claims;
+	}
+	
 	protected String getTokenkey(String userId, String token){
 		return "Token:"+userId+":"+token;
+	}
+	
+	protected User getCurrentUser(HttpServletRequest request) {
+		String reqToken = getReqToken(request);
+		Claims claims = getClaims(reqToken);
+		String tokenKey = getTokenkey((String) claims.get("userid"), reqToken);
+		String uJson = stringRedisTemplate.opsForValue().get(tokenKey);
+		User user = JsonUtils.parseJson(uJson, User.class);
+		return user;
 	}
 }

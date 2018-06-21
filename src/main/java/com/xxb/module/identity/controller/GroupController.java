@@ -20,22 +20,22 @@ public class GroupController extends BaseController {
 	@Autowired
 	private GroupRepository repo;
 	
-	@RequestMapping(value="/save")
+	@RequestMapping(value="/save.do")
 	public String saveGroup(@RequestBody Group group) {
 		group = repo.save(group);
 		return handleResult("成功", group);
 	}
 	
-	@RequestMapping(value="/view")
+	@RequestMapping(value="/view.do")
 	public String viewGroup(String id) {
 		Group group = repo.findById(id).get();
 		return handleResult("成功", group);
 	}
 	
-	@RequestMapping(value="/list")
+	@RequestMapping(value="/list.do")
 	public String listGroup(@PageableDefault(value = 10, sort = { "name" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<Group> groups = repo.findAll(pageable);
-		return handleResult("成功", groups);
+		return handlePageResult("成功", groups);
 	}
 
 }

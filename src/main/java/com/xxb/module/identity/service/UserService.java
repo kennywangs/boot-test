@@ -122,15 +122,14 @@ public class UserService extends BaseService<User> {
 		return user;
 	}
 
-	public void modifyPw(JSONObject param) {
+	public void modifyPw(JSONObject param, User curUser) {
 		User entity;
-		User user = getCurrentUser();
 		String userId = param.getString("userId");
 		String password = param.getString("password");
-		if (user.getType().equals(User.USER_TYPE_SUPER)) {
+		if (curUser.getType().equals(User.USER_TYPE_SUPER)) {
 			entity = repo.findById(userId).get();
-		} else if (userId.equals(user.getId())) {
-			entity = repo.findById(user.getId()).get();
+		} else if (userId.equals(curUser.getId())) {
+			entity = repo.findById(curUser.getId()).get();
 		} else {
 			throw new ProjectException("无权修改密码");
 		}

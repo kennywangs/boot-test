@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.collect.Lists;
 import com.xxb.base.BaseController;
 import com.xxb.module.identity.entity.Group;
 import com.xxb.module.identity.entity.User;
 import com.xxb.module.identity.repository.UserRepository;
-import com.xxb.module.identity.service.UserService;
+import com.xxb.module.identity.service.AuthService;
 import com.xxb.util.TokenUtils;
 import com.xxb.util.jackson.Djson;
 import com.xxb.util.jackson.JacksonJsonUtil;
@@ -37,7 +37,7 @@ public class SystemAction extends BaseController {
 	private UserRepository repo;
 	
 	@Autowired
-	private UserService userservice;
+	private AuthService authService;
 	
 	@RequestMapping(value="/register_w",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String registerUser(@RequestBody User user) {
@@ -48,7 +48,7 @@ public class SystemAction extends BaseController {
 			return handleError("注册失败,用户已经存在");
 		}
 		try {
-			user = userservice.saveUser(user);
+			user = userService.saveUser(user);
 			return handleResult("注册成功", user);
 		} catch (Exception e) {
 			return handleError("注册失败",e);
@@ -58,7 +58,7 @@ public class SystemAction extends BaseController {
 	@RequestMapping(value="/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String registerUser(@RequestBody JSONObject param,HttpServletRequest request,HttpServletResponse response) {
 		try {
-			User user = userservice.login(param);
+			User user = userService.login(param);
 			String reqToken = getCookieToken(request);
 			String tokenKey = getTokenkey(user.getId(), reqToken);
 			if (!StringUtils.isEmpty(reqToken) && stringRedisTemplate.hasKey(tokenKey)) {
@@ -119,6 +119,7 @@ public class SystemAction extends BaseController {
 	}
 	
 	private String getUserInfoJson(User user) throws JsonProcessingException {
+		user.setAuths(authService.getAllAuthId(user.getRoles()));
 		user.setTtl(System.currentTimeMillis()+24*60*60*1000);
 		Djson ujson = new Djson(User.class,null,"roles");
 		Djson gjson = new Djson(Group.class,null,null);

@@ -12,10 +12,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
-import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.xxb.base.BaseController;
@@ -33,6 +33,8 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 	private PathMatcher pathMatcher = new AntPathMatcher();
 	
 	private String[] excludedArray;
+	
+	private String[] pageArray;
 	
 	public PathMatcher getPathMatcher() {
 		return pathMatcher;
@@ -55,23 +57,26 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 		}
 		
 		// token鉴权
-		String reqToken = getCookieToken(httpRequest);
-		if (!StringUtils.isEmpty(reqToken)) {
-			Claims claims = TokenUtils.parseJWT(reqToken, env.getProperty("jwt.security"));
-			String tokenKey = getTokenkey((String) claims.get("userid"), reqToken);
-			String uJson = stringRedisTemplate.opsForValue().get(tokenKey);
-			if (claims!=null && !StringUtils.isEmpty(uJson)) {
-				if (checkAuths(uJson,url)) {
-					request.setAttribute("userId", claims.get("userid"));
-					request.setAttribute("userName", claims.get("unique_name"));
-					chain.doFilter(request, response);
-					return;
-				}
+		String reqToken = getReqToken(httpRequest);
+		if (StringUtils.isNotEmpty(reqToken)) {
+			if (accessAuthToken(request, url, reqToken)) {
+				chain.doFilter(request, response);
+				return;
 			}
 		}
 		
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		httpResponse.setCharacterEncoding("UTF-8");
+		
+		for (String pageUrl : pageArray)
+		{
+			boolean matched = pathMatcher.match(pageUrl, url);
+			if (matched){
+				httpResponse.sendRedirect("/index.html");
+				return;
+			}
+		}
+		
 		httpResponse.setContentType("application/json; charset=utf-8");
 		httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		ProjectException e = new ProjectException("请您先登录！", ProjectException.NeedLogin);
@@ -79,8 +84,28 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 		return;
 	}
 
+	private boolean accessAuthToken(ServletRequest request, String url, String reqToken) throws IOException, ServletException {
+		Claims claims = TokenUtils.parseJWT(reqToken, env.getProperty("jwt.security"));
+		String tokenKey = getTokenkey((String) claims.get("userid"), reqToken);
+		String uJson = stringRedisTemplate.opsForValue().get(tokenKey);
+		if (claims!=null && !StringUtils.isEmpty(uJson)) {
+			if (url.equals("/user/logout.do")) {
+				return true;
+			}
+			if (checkAuths(uJson,url)) {
+				request.setAttribute("userId", claims.get("userid"));
+				request.setAttribute("userName", claims.get("unique_name"));
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private boolean checkAuths(String uJson, String url) {
 		User user = JsonUtils.parseJson(uJson, User.class);
+		if (user.getType()==User.USER_TYPE_SUPER) {
+			return true;
+		}
 		HashOperations<String, String, String> hops = stringRedisTemplate.opsForHash();
 		if (user.getAuths()==null) {
 			return false;
@@ -101,7 +126,11 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, filterConfig.getServletContext());
 		String excluded = env.getProperty("jwt.cookie.auth.excluded");
 		if (!StringUtils.isEmpty(excluded)) {
-			excludedArray = excluded.split(";");
+			excludedArray = excluded.split(",");
+		}
+		String pages = env.getProperty("jwt.cookie.auth.page");
+		if (!StringUtils.isEmpty(pages)) {
+			pageArray = pages.split(",");
 		}
 	}
 
