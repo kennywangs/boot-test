@@ -121,6 +121,16 @@ public class UserService extends BaseService<User> {
 		}
 		return user;
 	}
+	
+	public User findByOpenId(String openId) {
+		User user = repo.queryTopEntityByOpenIdEquals(openId);
+		return user;
+	}
+	
+	public User findByMobile(String mobile) {
+		User user = repo.queryTopEntityByMobileEquals(mobile);
+		return user;
+	}
 
 	public void modifyPw(JSONObject param, User curUser) {
 		User entity;

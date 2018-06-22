@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, String>,JpaSpecifica
 	
 	public User queryTopEntityByNameEqualsOrMobileEquals(String name,String mobile);
 
+	public User queryTopEntityByOpenIdEquals(String openId);
+
 }

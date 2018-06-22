@@ -216,4 +216,18 @@ public abstract class BaseController {
 		User user = JsonUtils.parseJson(uJson, User.class);
 		return user;
 	}
+	
+	protected String getCurrentUserId(HttpServletRequest request) {
+		String reqToken = getReqToken(request);
+		Claims claims = getClaims(reqToken);
+		return (String) claims.get("userid");
+	}
+	
+	protected boolean checkTokenUser(String token, User user) {
+		Claims claims = getClaims(token);
+		if (user.getId().equals(claims.get("userid"))) {
+			return true;
+		}
+		return false;
+	}
 }

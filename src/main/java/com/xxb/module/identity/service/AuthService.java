@@ -97,6 +97,9 @@ public class AuthService extends BaseService<Authority> {
 	@Transactional(readOnly = true)
 	public Set<String> getAllAuthId(Set<Role> roles) {
 		Map<String,Authority> auths = Maps.newHashMap();
+		if (roles==null) {
+			return null;
+		}
 		for (Role role:roles) {
 			for (Authority auth:role.getAuths()) {
 				if (auths.containsKey(auth.getId())) {

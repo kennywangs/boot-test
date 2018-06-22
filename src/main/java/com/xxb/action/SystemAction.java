@@ -59,7 +59,7 @@ public class SystemAction extends BaseController {
 	public String registerUser(@RequestBody JSONObject param,HttpServletRequest request,HttpServletResponse response) {
 		try {
 			User user = userService.login(param);
-			String reqToken = getCookieToken(request);
+			String reqToken = getReqToken(request);
 			String tokenKey = getTokenkey(user.getId(), reqToken);
 			if (!StringUtils.isEmpty(reqToken) && stringRedisTemplate.hasKey(tokenKey)) {
 				user.setToken(reqToken);
