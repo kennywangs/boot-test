@@ -23,6 +23,7 @@ import com.xxb.module.identity.entity.Group;
 import com.xxb.module.identity.entity.User;
 import com.xxb.module.identity.repository.UserRepository;
 import com.xxb.module.identity.service.AuthService;
+import com.xxb.util.Constant;
 import com.xxb.util.TokenUtils;
 import com.xxb.util.jackson.Djson;
 import com.xxb.util.jackson.JacksonJsonUtil;
@@ -60,7 +61,7 @@ public class SystemAction extends BaseController {
 		try {
 			User user = userService.login(param);
 			String reqToken = getReqToken(request);
-			String tokenKey = getTokenkey(user.getId(), reqToken);
+			String tokenKey = Constant.getTokenkey(user.getId(), reqToken);
 			if (!StringUtils.isEmpty(reqToken) && stringRedisTemplate.hasKey(tokenKey)) {
 				user.setToken(reqToken);
 				return handleResult("登录成功！", user);
@@ -76,7 +77,7 @@ public class SystemAction extends BaseController {
 			cookie.setPath("/");
 			cookie.setHttpOnly(true);
 			response.addCookie(cookie);
-			tokenKey = getTokenkey(user.getId(), token);
+			tokenKey = Constant.getTokenkey(user.getId(), token);
 			
 			stringRedisTemplate.opsForValue().set(tokenKey,getUserInfoJson(user),1,TimeUnit.DAYS);
 			user.setToken(token);
@@ -91,7 +92,7 @@ public class SystemAction extends BaseController {
 		try {
 			User user = userService.login(param);
 			String reqToken = getCookieToken(request);
-			String tokenKey = getTokenkey(user.getId(), reqToken);
+			String tokenKey = Constant.getTokenkey(user.getId(), reqToken);
 			if (!StringUtils.isEmpty(reqToken) && stringRedisTemplate.hasKey(tokenKey)) {
 				return checkToken(reqToken,param.getString("name"));
 			}

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.xxb.module.identity.entity.User;
 import com.xxb.module.identity.service.UserService;
+import com.xxb.util.Constant;
 import com.xxb.util.JsonUtils;
 import com.xxb.util.TokenUtils;
 import com.xxb.util.jackson.Djson;
@@ -204,14 +205,10 @@ public abstract class BaseController {
 		return claims;
 	}
 	
-	protected String getTokenkey(String userId, String token){
-		return "Token:"+userId+":"+token;
-	}
-	
 	protected User getCurrentUser(HttpServletRequest request) {
 		String reqToken = getReqToken(request);
 		Claims claims = getClaims(reqToken);
-		String tokenKey = getTokenkey((String) claims.get("userid"), reqToken);
+		String tokenKey = Constant.getTokenkey((String) claims.get("userid"), reqToken);
 		String uJson = stringRedisTemplate.opsForValue().get(tokenKey);
 		User user = JsonUtils.parseJson(uJson, User.class);
 		return user;

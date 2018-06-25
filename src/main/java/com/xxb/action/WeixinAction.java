@@ -17,6 +17,7 @@ import com.xxb.base.BaseController;
 import com.xxb.module.identity.entity.Group;
 import com.xxb.module.identity.entity.User;
 import com.xxb.module.identity.service.AuthService;
+import com.xxb.util.Constant;
 import com.xxb.util.TokenUtils;
 import com.xxb.util.jackson.Djson;
 import com.xxb.util.jackson.JacksonJsonUtil;
@@ -64,7 +65,7 @@ public class WeixinAction extends BaseController {
 				userService.saveUser(user);
 			}
 			
-			String tokenKey = getTokenkey(user.getId(), token);
+			String tokenKey = Constant.getTokenkey(user.getId(), token);
 			if (!StringUtils.isEmpty(token) && stringRedisTemplate.hasKey(tokenKey)) {
 				user.setToken(token);
 				return handleResult("登录成功！", user);
@@ -72,7 +73,7 @@ public class WeixinAction extends BaseController {
 			token = TokenUtils.createJWT(user.getName(), user.getId(), user.getType().toString(),
 					env.getProperty("jwt.client"), env.getProperty("jwt.name"),
 					Integer.valueOf(env.getProperty("jwt.expiresSecond")) * 1000, env.getProperty("jwt.security"));
-			tokenKey = getTokenkey(user.getId(), token);
+			tokenKey = Constant.getTokenkey(user.getId(), token);
 			stringRedisTemplate.opsForValue().set(tokenKey,getUserInfoJson(user),1,TimeUnit.DAYS);
 			user.setToken(token);
 			

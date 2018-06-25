@@ -1,7 +1,6 @@
 package com.xxb.config;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,20 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.xxb.base.BaseController;
 import com.xxb.base.ProjectException;
-import com.xxb.module.identity.entity.Authority;
-import com.xxb.module.identity.entity.User;
-import com.xxb.util.Constant;
-import com.xxb.util.JsonUtils;
-import com.xxb.util.TokenUtils;
-
-import io.jsonwebtoken.Claims;
+import com.xxb.base.SecurityService;
 
 public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filter {
 	
@@ -36,9 +28,7 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 	
 	private String[] pageArray;
 	
-	public PathMatcher getPathMatcher() {
-		return pathMatcher;
-	}
+	private SecurityService securityService;
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -59,7 +49,7 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 		// token鉴权
 		String reqToken = getReqToken(httpRequest);
 		if (StringUtils.isNotEmpty(reqToken)) {
-			if (accessAuthToken(request, url, reqToken)) {
+			if (securityService.accessAuthToken(url, reqToken)) {
 				chain.doFilter(request, response);
 				return;
 			}
@@ -82,43 +72,6 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 		ProjectException e = new ProjectException("请您先登录！", ProjectException.NeedLogin);
 		httpResponse.getWriter().write(handleError("权限被拒绝！", e));
 		return;
-	}
-
-	private boolean accessAuthToken(ServletRequest request, String url, String reqToken) throws IOException, ServletException {
-		Claims claims = TokenUtils.parseJWT(reqToken, env.getProperty("jwt.security"));
-		String tokenKey = getTokenkey((String) claims.get("userid"), reqToken);
-		String uJson = stringRedisTemplate.opsForValue().get(tokenKey);
-		if (claims!=null && !StringUtils.isEmpty(uJson)) {
-			if (url.equals("/user/logout.do")) {
-				return true;
-			}
-			if (checkAuths(uJson,url)) {
-				request.setAttribute("userId", claims.get("userid"));
-				request.setAttribute("userName", claims.get("unique_name"));
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean checkAuths(String uJson, String url) {
-		User user = JsonUtils.parseJson(uJson, User.class);
-		if (user.getType()==User.USER_TYPE_SUPER) {
-			return true;
-		}
-		HashOperations<String, String, String> hops = stringRedisTemplate.opsForHash();
-		if (user.getAuths()==null) {
-			return false;
-		}
-		List<String> authJlist = hops.multiGet(Constant.cacheAuthsKey, user.getAuths());
-		for (String authJson : authJlist) {
-			Authority auth = JsonUtils.parseJson(authJson, Authority.class);
-			boolean matched = pathMatcher.match(auth.getAuthUrl(), url);
-			if (matched) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override

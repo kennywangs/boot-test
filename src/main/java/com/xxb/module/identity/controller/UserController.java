@@ -20,6 +20,7 @@ import com.xxb.base.BaseController;
 import com.xxb.module.identity.entity.Group;
 import com.xxb.module.identity.entity.User;
 import com.xxb.module.identity.repository.UserRepository;
+import com.xxb.util.Constant;
 import com.xxb.util.jackson.Djson;
 
 import io.jsonwebtoken.Claims;
@@ -81,7 +82,7 @@ public class UserController extends BaseController {
 		try {
 			String reqToken = getReqToken(request);
 			Claims claims = getClaims(reqToken);
-			String tokenKey = getTokenkey((String) claims.get("userid"), getReqToken(request));
+			String tokenKey = Constant.getTokenkey((String) claims.get("userid"), getReqToken(request));
 			stringRedisTemplate.delete(tokenKey);
 			Cookie cookie = getCookie(request, "access-token");
 			cookie.setValue(null);
