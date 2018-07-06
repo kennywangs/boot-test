@@ -4,17 +4,12 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,6 +20,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -105,10 +101,12 @@ public class RedisConfig extends CachingConfigurerSupport {
         // 设置监听使用的线程池
         container.setTaskExecutor(executor);
         // 设置监听的Topic: PatternTopic/ChannelTopic
-        Topic topic = new PatternTopic(RedisMessageListener.LISTENER_PATTERN);
         // 设置监听器
-        container.addMessageListener(new RedisMessageListener(redisTemplate), topic);
+//        Topic mgsTopic = new PatternTopic(RedisMessageListener.LISTENER_PATTERN);
+//        container.addMessageListener(new RedisMessageListener(redisTemplate), mgsTopic);
+        Topic channelTopic = new PatternTopic(RedisChannelListener.SYSTEM_PATTERN);
+        container.addMessageListener(new RedisChannelListener(redisTemplate), channelTopic);
         return container;
     }
-
+	
 }

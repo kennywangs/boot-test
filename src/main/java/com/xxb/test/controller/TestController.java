@@ -64,5 +64,10 @@ public class TestController extends BaseController {
 		Test e = repo.findById(id).get();
 		return e;
 	}
+	
+	@RequestMapping(value = "/systempub", method=RequestMethod.GET)
+	public void testRedisPub(String id){
+		stringRedisTemplate.convertAndSend("systemchat",String.valueOf(Math.random()));
+	}
 
 }
