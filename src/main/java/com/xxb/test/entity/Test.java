@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -29,6 +30,17 @@ public class Test implements Serializable {
 	@Column(name = "fname")
 	@org.hibernate.annotations.Type(type = "org.hibernate.type.StringType")
 	private String fname;
+	
+	@Version
+	private Long version;
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 
 	@Column(name = "fdate")
 	@javax.persistence.Temporal(TemporalType.TIMESTAMP)

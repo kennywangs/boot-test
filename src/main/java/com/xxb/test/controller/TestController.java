@@ -17,6 +17,7 @@ import com.xxb.base.BaseController;
 import com.xxb.base.ServiceResult;
 import com.xxb.test.entity.Test;
 import com.xxb.test.repository.TestRepository;
+import com.xxb.test.service.TestService;
 import com.xxb.util.jackson.Djson;
 import com.xxb.util.jackson.JacksonJsonUtil;
 
@@ -26,6 +27,9 @@ public class TestController extends BaseController {
 	
 	@Autowired
 	private TestRepository repo;
+	
+	@Autowired
+	private TestService testService;
 	
 	@RequestMapping(value = "/hello",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ServiceResult hello(@RequestHeader String appId){
@@ -37,7 +41,15 @@ public class TestController extends BaseController {
 	
 	@RequestMapping(value = "/save",produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.POST)
 	public String save(@RequestBody Test test){
-		Test e = repo.save(test);
+		test.setFname(String.valueOf(System.currentTimeMillis()));
+		Test e = testService.save(test);
+		test.setFname("final");
+//		e = testService.save(test);
+		int ret = testService.updateVersion(test.getFid());
+		if (ret<1) {
+			return handleError("更新不成功");
+		}
+//		repo.save(e);
 		return handleResult("save succussful.", e);
 	}
 	
