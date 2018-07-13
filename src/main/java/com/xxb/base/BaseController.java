@@ -46,18 +46,14 @@ public abstract class BaseController {
     }
 
 	public <T> String handlePageResult(String msg, Page<T> page) {
-		ServiceResult result = new ServiceResult();
+		ServiceResult result = new ServiceResult(true,msg,page.getContent());
 		result.setTotalNumber(page.getTotalElements());
 		result.setTotalPage(page.getTotalPages());
-		result.setMsg(msg);
-		result.setData(page.getContent());
 		return JsonUtils.toJson(result);
 	}
 
-	public String handleResult(String msg, Object props) {
-		ServiceResult result = new ServiceResult();
-		result.setMsg(msg);
-		result.setData(props);
+	public String handleResult(String msg, Object data) {
+		ServiceResult result = new ServiceResult(msg, data);
 		return JsonUtils.toJson(result);
 	}
 
@@ -67,10 +63,10 @@ public abstract class BaseController {
 		return JsonUtils.toJson(result);
 	}
 
-	public String handleError(String msg, Throwable e, Object props) {
+	public String handleError(String msg, Throwable e, Object data) {
 		ServiceResult result = new ServiceResult();
 		setExResult(msg, e, result);
-		result.setData(props);
+		result.setData(data);
 		return JsonUtils.toJson(result);
 	}
 
@@ -105,11 +101,9 @@ public abstract class BaseController {
 	}
 	
 	public <T> String handleJsonPageResult(String msg, Page<T> page,Djson... djson) {
-		ServiceResult result = new ServiceResult();
+		ServiceResult result = new ServiceResult(msg,page.getContent());
 		result.setTotalNumber(page.getTotalElements());
 		result.setTotalPage(page.getTotalPages());
-		result.setMsg(msg);
-		result.setData(page.getContent());
 		try {
 			return JacksonJsonUtil.toJson(result, Arrays.asList(djson));
 		} catch (JsonProcessingException e) {
@@ -117,10 +111,8 @@ public abstract class BaseController {
 		}
 	}
 	
-	public String handleJsonResult(String msg, Object props,Djson... djson) {
-		ServiceResult result = new ServiceResult();
-		result.setMsg(msg);
-		result.setData(props);
+	public String handleJsonResult(String msg, Object data,Djson... djson) {
+		ServiceResult result = new ServiceResult(msg, data);
 		try {
 			return JacksonJsonUtil.toJson(result, Arrays.asList(djson));
 		} catch (JsonProcessingException e) {

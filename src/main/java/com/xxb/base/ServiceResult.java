@@ -13,6 +13,34 @@ public class ServiceResult {
 	private Integer totalPage;
 	
 	private Object data;
+	
+	public ServiceResult() {}
+	
+	public ServiceResult(String msg) {
+		this(true, msg);
+	}
+	public ServiceResult(String msg, Object data) {
+		this(true, msg, data);
+	}
+	/**
+	 * <p>Description: 构造方法</p>
+	 * @param success 操作结果
+	 * @param msg 返回提示信息
+	 */
+	public ServiceResult(boolean success, String msg) {
+		this(success, msg , null);
+	}
+	/**
+	 * <p>Description: 构造方法</p>
+	 * @param success 操作结果
+	 * @param msg 返回提示信息
+	 * @param other 返回其他对象
+	 */
+	public ServiceResult(boolean success, String msg, Object data) {
+		this.success = success;
+		this.msg = msg;
+		this.data = data;
+	}
 
 	public Boolean isSuccess() {
 		return success;
