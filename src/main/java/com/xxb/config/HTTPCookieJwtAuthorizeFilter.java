@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -28,6 +29,7 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 	
 	private String[] pageArray;
 	
+	@Autowired
 	private SecurityService securityService;
 	
 	@Override

@@ -37,11 +37,11 @@ public class Appoint implements Serializable {
 	@Type(type="org.hibernate.type.StringType")
 	private String id;
 	
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id")
 	private User customer;
 	
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "attendant_id")
 	private User attendant;
 	

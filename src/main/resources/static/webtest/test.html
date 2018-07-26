@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>jsonp</title>
 	<script src="/js/jquery-3.3.1.min.js"></script>
+	<script src="/js/date.js"></script>
 </head>
 <body>
 	<button id="jsonp" type="submit">
@@ -11,6 +12,13 @@
 	</button>
 	<button id="send" type="submit">
 		normal test
+	</button>
+	<input id="datestr" type="datetime" value="2018-02-20 21:12:13" />
+	<button id="parsedate" type="submit">
+		parse date
+	</button>
+	<button id="myappoint" type="submit">
+		myappoint
 	</button>
 	<script type="text/javascript">
 		$("#jsonp").click(function() {
@@ -34,6 +42,42 @@
 				headers: {"appId":"3333"},
 				success: function (data) {
 					console.log(data.msg);
+				}
+			});
+		});
+		$("#parsedate").click(function() {
+			var str = $("#datestr").val();
+			var date = DateUtils.Date.fromString(str,'yyyy-MM-dd hh:mm:ss');
+			console.log(date);
+			var tostr = DateUtils.Date.toString(date,DateUtils.Date.DEFAULT_FORMAT1);
+			console.log(tostr);
+			var appoint = {startDate:tostr,endDate:'2018-02-20 21:32:13',attendant:{id:'2c9ad0b6-de25-4b2f-a671-3c41025744dc'}};
+			$.ajax({
+				url:"http://localhost:8080/appoint/customer/start.do",
+				type:'POST',
+				dataType:'json',
+				contentType:'application/json;charset=UTF-8',
+				data: JSON.stringify(appoint),
+				success: function (data) {
+					console.log(data.msg);
+				},
+				error: function(data){
+					obj = JSON.parse(data.responseText);
+					console.log(obj.msg);
+				}
+			});
+		});
+		$("#myappoint").click(function() {
+			$.ajax({
+				url:"http://localhost:8080/appoint/customer/mylist.do",
+				dataType:'json',
+				data: {page:0,size:10,date:'2018-02-20 21:32:13'},
+				success: function (data) {
+					console.log(data.msg);
+				},
+				error: function(data){
+					obj = JSON.parse(data.responseText);
+					console.log(obj.msg);
 				}
 			});
 		});

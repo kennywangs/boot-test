@@ -11,6 +11,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class AppointService extends BaseService<Appoint> {
 	private AppointRepository repo;
 
 	public Appoint startAppoint(Appoint appoint) {
+		appoint.setCreateDate(new Date());
 		return repo.save(appoint);
 	}
 	
@@ -44,11 +46,12 @@ public class AppointService extends BaseService<Appoint> {
 		return repo.save(appoint);
 	}
 	
-	public Page<Appoint> listAppointByDate(String attendant, Date date, Pageable pageable) {
+	@Transactional(readOnly = true)
+	public Page<Appoint> listAppointByDate(String customer, String attendant, Date date, Pageable pageable) {
 		DateTime dt = new DateTime(date);
 		Date startDate = dt.withTimeAtStartOfDay().toDate();
 		Date endDate = dt.withTimeAtStartOfDay().plusDays(1).toDate();
-		Specification<Appoint> specification = dateWhereClause(attendant, startDate, endDate);
+		Specification<Appoint> specification = dateWhereClause(customer,attendant, startDate, endDate);
 		Page<Appoint> page = repo.findAll(specification, pageable);
 		return page;
 	}
@@ -89,15 +92,24 @@ public class AppointService extends BaseService<Appoint> {
 	}
 	
 	@SuppressWarnings("serial")
-	private Specification<Appoint> dateWhereClause(String attendant, Date startDate, Date endDate) {
+	private Specification<Appoint> dateWhereClause(String customer, String attendant, Date startDate, Date endDate) {
 		return new Specification<Appoint>() {
 			@Override
 			public Predicate toPredicate(Root<Appoint> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> predicate = new ArrayList<>();
 
-				Join<Appoint, User> attendantJoin = root
-						.join(root.getModel().getSingularAttribute("attendant", User.class), JoinType.LEFT);
-				predicate.add(cb.equal(attendantJoin.get("id").as(String.class), attendant));
+				if (StringUtils.isNotEmpty(customer)) {
+					Join<Appoint, User> attendantJoin = root
+							.join(root.getModel().getSingularAttribute("customer", User.class), JoinType.LEFT);
+					predicate.add(cb.equal(attendantJoin.get("id").as(String.class), customer));
+					
+				}
+				if (StringUtils.isNotEmpty(attendant)) {
+					Join<Appoint, User> attendantJoin = root
+							.join(root.getModel().getSingularAttribute("attendant", User.class), JoinType.LEFT);
+					predicate.add(cb.equal(attendantJoin.get("id").as(String.class), attendant));
+					
+				}
 
 				predicate.add(cb.greaterThanOrEqualTo(root.get("startDate").as(Date.class), startDate));
 				predicate.add(cb.lessThan(root.get("startDate").as(Date.class), endDate));

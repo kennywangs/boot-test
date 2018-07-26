@@ -60,7 +60,7 @@ public class WeixinAction extends BaseController {
 				}
 				user.setOpenId(object.getString("openid"));
 				user.setMobile(mobile==null?"":mobile);
-				user.setName(mobile==null?object.getString("openid"):mobile);
+				user.setName(mobile==null?"u"+System.currentTimeMillis():mobile);
 				user.setType(User.USER_TYPE_CUSTOM);
 				userService.saveUser(user);
 			}
