@@ -63,7 +63,9 @@
 						data: JSON.stringify(data),
 						success: function (data) {
 							mui.toast(data.msg);
-							window.location.href = "/index.html";
+							if (data.success){
+								window.location.href = "/index.html";
+							}
 						},
 						error: function(data){ console.log(data); }
 					});

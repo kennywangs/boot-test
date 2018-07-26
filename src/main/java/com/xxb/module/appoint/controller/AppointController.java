@@ -23,7 +23,6 @@ import com.xxb.base.BaseController;
 import com.xxb.base.ProjectException;
 import com.xxb.module.appoint.entity.Appoint;
 import com.xxb.module.appoint.service.AppointService;
-import com.xxb.module.identity.entity.Group;
 import com.xxb.module.identity.entity.User;
 import com.xxb.util.jackson.Djson;
 
@@ -55,13 +54,9 @@ public class AppointController extends BaseController {
 			User user = getCurrentUser(request);
 			Pageable pageable = PageRequest.of(page, size, new Sort(Direction.DESC, "startDate"));
 			Page<Appoint> resultPage = appointService.listAppointByDate(user.getId(),null,date,pageable);
-//			resultPage.getContent().stream().forEach(appoint -> {
-//				appoint.getAttendant();
-//			});
 			Djson ajson = new Djson(Appoint.class,null,"customer");
 			Djson ujson = new Djson(User.class,null,"password,roles,group");
-			Djson gjson = new Djson(Group.class,null,null);
-			return handleJsonPageResult("获取成功",resultPage,ajson,ujson,gjson);
+			return handleJsonPageResult("获取成功",resultPage,ajson,ujson);
 		} catch (Exception e) {
 			return handleError("获取失败.",e);
 		}

@@ -5,7 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,11 @@ public class TestController extends BaseController {
 		ret.setMsg("hello world.");
 		ret.setData(appId);
 		return ret;
+	}
+	
+	@RequestMapping(value = "/testresp",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String> testResp(){
+		return new ResponseEntity<String>("manage/index", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/save",produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method=RequestMethod.POST)
