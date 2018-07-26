@@ -199,9 +199,15 @@ public abstract class BaseController {
 	
 	protected User getCurrentUser(HttpServletRequest request) {
 		String reqToken = getReqToken(request);
+		if (StringUtils.isEmpty(reqToken)) {
+			throw new ProjectException("您还没有登录！", ProjectException.NeedLogin);
+		}
 		Claims claims = getClaims(reqToken);
 		String tokenKey = Constant.getTokenkey((String) claims.get("userid"), reqToken);
 		String uJson = stringRedisTemplate.opsForValue().get(tokenKey);
+		if (StringUtils.isEmpty(uJson)) {
+			throw new ProjectException("您需要重新登录！", ProjectException.NeedLogin);
+		}
 		User user = JsonUtils.parseJson(uJson, User.class);
 		return user;
 	}

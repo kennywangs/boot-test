@@ -64,7 +64,7 @@ public class HTTPCookieJwtAuthorizeFilter extends BaseController implements Filt
 		{
 			boolean matched = pathMatcher.match(pageUrl, url);
 			if (matched){
-				httpResponse.sendRedirect("/index.html");
+				httpResponse.sendRedirect("/login.html");
 				return;
 			}
 		}

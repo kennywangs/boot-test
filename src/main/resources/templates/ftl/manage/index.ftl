@@ -17,47 +17,20 @@
 			<h1 class="mui-title">管理中心</h1>
 		</header>
 		<div class="mui-content">
-			<form id='login-form' class="mui-input-group">
-				<div class="mui-input-row">
-					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
-				</div>
-				<div class="mui-input-row">
-					<label>密码</label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
-				</div>
-				<div class="mui-input-row">
-					<label>确认密码</label>
-					<input id='repassword' type="password" class="mui-input-clear mui-input" placeholder="请再次输入密码">
-				</div>
-				<div class="mui-input-row">
-					<label>手机号</label>
-					<input id='mobile' type="text" class="mui-input-clear mui-input" placeholder="请输入手机号">
-				</div>
-				<div class="mui-input-row">
-					<label>昵称</label>
-					<input id='description' type="text" class="mui-input-clear mui-input" placeholder="请输入一个你喜欢的名字">
-				</div>
-				<input id='type' type="hidden" value="4">
-			</form>
-			<!-- <form class="mui-input-group">
-				<ul class="mui-table-view mui-table-view-chevron">
-					<li class="mui-table-view-cell">
-						自动登录
-						<div id="autoLogin" class="mui-switch">
-							<div class="mui-switch-handle"></div>
-						</div>
-					</li>
-				</ul>
-			</form> -->
-			<div class="mui-content-padded">
-				<button id='reg' class="mui-btn mui-btn-block mui-btn-primary">马上注册</button>
-				<div class="link-area"><a id='login'>账号登陆</a>
-				</div>
-			</div>
-			<div class="mui-content-padded oauth-area">
-
-			</div>
+			<ul class="mui-table-view mui-grid-view mui-grid-9">
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="/manage/index">
+						<span class="mui-icon mui-icon-gear"></span>
+						<div class="mui-media-body">用户管理</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4"><a href="#">
+					<span class="mui-icon mui-icon-location"></span>
+					<div class="mui-media-body">机构管理</div></a></li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4"><a href="#">
+						<span class="mui-icon mui-icon-more"></span>
+						<div class="mui-media-body">预约管理</div></a></li>
+			</ul>
 		</div>
 		<script src="/js/mui-min.js"></script>
 		<script src="/js/jquery-3.3.1.min.js"></script>

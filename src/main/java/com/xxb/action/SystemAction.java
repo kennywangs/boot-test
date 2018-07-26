@@ -57,7 +57,7 @@ public class SystemAction extends BaseController {
 	}
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String registerUser(@RequestBody JSONObject param,HttpServletRequest request,HttpServletResponse response) {
+	public String userLogin(@RequestBody JSONObject param,HttpServletRequest request,HttpServletResponse response) {
 		try {
 			User user = userService.login(param);
 			String reqToken = getReqToken(request);
@@ -87,7 +87,7 @@ public class SystemAction extends BaseController {
 		}
 	}
 	
-	@RequestMapping(value = "/token.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/gettoken", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String getToken(@RequestBody JSONObject param, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			User user = userService.login(param);
@@ -106,6 +106,19 @@ public class SystemAction extends BaseController {
 //					env.getProperty("jwt.client"), env.getProperty("jwt.name"),
 //					Integer.valueOf(env.getProperty("jwt.expiresSecond")) * 1000, env.getProperty("jwt.security"));
 //			return handleResult("获取成功！", token);
+		} catch (Exception e) {
+			return handleError("获取失败！", e);
+		}
+	}
+	
+	@RequestMapping(value = "/getuser", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String getUser(HttpServletRequest request) {
+		try {
+			User user = getCurrentUser(request);
+			user.setPassword(null);
+			user.setCreateDate(null);
+			user.setModifyDate(null);
+			return handleResult("获取成功！", user);
 		} catch (Exception e) {
 			return handleError("获取失败！", e);
 		}
