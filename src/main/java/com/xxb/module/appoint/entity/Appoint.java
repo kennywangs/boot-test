@@ -30,6 +30,8 @@ public class Appoint implements Serializable {
 	
 	public static final Integer STATUS_COMFIRM = 10;
 	
+	public static final Integer STATUS_CANCEL = 99;
+	
 	@Id
 	@GeneratedValue(generator="uuid")
 	@GenericGenerator(name="uuid", strategy="uuid2")
@@ -76,6 +78,10 @@ public class Appoint implements Serializable {
 	@Column(name = "add_info",length=102400)
 	@Type(type="org.hibernate.type.StringType")
 	private String info;
+	
+	@Column(name = "operator",length=48)
+	@Type(type="org.hibernate.type.StringType")
+	private String operator;
 	
 	private Integer status = STATUS_APPOINT;
 
@@ -149,6 +155,14 @@ public class Appoint implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
 	}
 
 }

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xxb.base.ProjectException;
 import com.xxb.module.appoint.entity.Appoint;
 import com.xxb.module.appoint.repository.AppointRepository;
 import com.xxb.module.base.service.BaseService;
@@ -40,10 +41,24 @@ public class AppointService extends BaseService<Appoint> {
 		return repo.save(appoint);
 	}
 	
-	public Appoint confirmAppoint(String appointId) {
+	public void comfirmAppoint(String appointId, User user) {
 		Appoint appoint = repo.findById(appointId).get();
+		if (appoint==null) {
+			throw new ProjectException("没有这个预约");
+		}
+		appoint.setOperator(user.getId());
 		appoint.setStatus(Appoint.STATUS_COMFIRM);
-		return repo.save(appoint);
+		repo.save(appoint);
+	}
+	
+	public void cancelAppoint(String appointId, User user) {
+		Appoint appoint = repo.findById(appointId).get();
+		if (appoint==null) {
+			throw new ProjectException("没有这个预约");
+		}
+		appoint.setOperator(user.getId());
+		appoint.setStatus(Appoint.STATUS_CANCEL);
+		repo.save(appoint);
 	}
 	
 	@Transactional(readOnly = true)

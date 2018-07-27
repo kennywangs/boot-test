@@ -1,5 +1,7 @@
 package com.xxb.test.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,8 @@ import com.xxb.util.jackson.JacksonJsonUtil;
 @RequestMapping("/test")
 public class TestController extends BaseController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+	
 	@Autowired
 	private TestRepository repo;
 	
@@ -43,6 +47,8 @@ public class TestController extends BaseController {
 	
 	@RequestMapping(value = "/testresp",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> testResp(){
+		logger.info("log info test");
+		logger.error("log error test");
 		return new ResponseEntity<String>("manage/index", HttpStatus.OK);
 	}
 	

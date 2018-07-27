@@ -33,6 +33,12 @@ public class AppointController extends BaseController {
 	@Autowired
 	private AppointService appointService;
 	
+	/**
+	 * 发起预约
+	 * @param appoint
+	 * @param request
+	 * @return
+	 */
 	@PostMapping(value="/start.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String startAppoint(@RequestBody Appoint appoint, HttpServletRequest request) {
 		try {
@@ -41,6 +47,7 @@ public class AppointController extends BaseController {
 				throw new ProjectException("没有指定技师!");
 			}
 			appoint.setCustomer(user);
+			appoint.setOperator(user.getId());
 			appointService.startAppoint(appoint);
 			return handleResult("预约成功",appoint);
 		} catch (Exception e) {
@@ -48,6 +55,14 @@ public class AppointController extends BaseController {
 		}
 	}
 	
+	/**
+	 * 我的预约
+	 * @param page
+	 * @param size
+	 * @param date
+	 * @param request
+	 * @return
+	 */
 	@GetMapping(value="/mylist.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listCustomerAppoints(@RequestParam int page, @RequestParam int size, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date date, HttpServletRequest request) {
 		try {
@@ -59,6 +74,23 @@ public class AppointController extends BaseController {
 			return handleJsonPageResult("获取成功",resultPage,ajson,ujson);
 		} catch (Exception e) {
 			return handleError("获取失败.",e);
+		}
+	}
+	
+	/**
+	 * 取消预约
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	@PostMapping(value="/cancel.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String cancelAppoint(@RequestParam String id, HttpServletRequest request) {
+		try {
+			User user = getCurrentUser(request);
+			appointService.cancelAppoint(id,user);
+			return handleResult("取消预约成功");
+		} catch (Exception e) {
+			return handleError("取消预约失败.",e);
 		}
 	}
 

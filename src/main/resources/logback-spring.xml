@@ -8,18 +8,34 @@
 			</filter> -->
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
 
 	<!--输出到文件 -->
 	<appender name="file"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${log.path}/logback.%d{yyyy-MM-dd}.log
-			</fileNamePattern>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/logback.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<maxFileSize>10MB</maxFileSize>
 		</rollingPolicy>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	
+	<appender name="myerror"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/myerror.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<maxFileSize>10MB</maxFileSize>
+		</rollingPolicy>
+		<encoder>
+			<pattern>ERROR:%d{HH:mm:ss.SSS} %contextName [%thread] [%-5level] %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
 
@@ -29,6 +45,7 @@
 	</root>
 
 	<!-- logback为java中的包 -->
-	<logger name="www.wex5.com.myproject.boot" level="info">
+	<logger name="com.xxb" level="error">
+		<appender-ref ref="myerror" />
 	</logger>
 </configuration>
