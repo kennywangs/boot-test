@@ -33,6 +33,11 @@
 			<maxHistory>30</maxHistory>
 			<maxFileSize>10MB</maxFileSize>
 		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>error</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
 		<encoder>
 			<pattern>ERROR:%d{HH:mm:ss.SSS} %contextName [%thread] [%-5level] %logger{36} - %msg%n</pattern>
 			<charset>UTF-8</charset>
@@ -45,7 +50,7 @@
 	</root>
 
 	<!-- logback为java中的包 -->
-	<logger name="com.xxb" level="error">
+	<logger name="com.xxb" level="info">
 		<appender-ref ref="myerror" />
 	</logger>
 </configuration>

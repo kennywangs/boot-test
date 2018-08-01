@@ -1,0 +1,5 @@
+project:
+  name: boot-test
+  list: 
+    - a
+    - b

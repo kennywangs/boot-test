@@ -1,5 +1,7 @@
 package com.xxb.test.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,9 @@ public class TestController extends BaseController {
 	@RequestMapping(value = "/testresp",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> testResp(){
 		logger.info("log info test");
-		logger.error("log error test");
+		String[] list = env.getProperty("project.list", String[].class);
+		logger.info(env.getProperty("project.list[0]"));
+		logger.error(env.getProperty("project.name"));
 		return new ResponseEntity<String>("manage/index", HttpStatus.OK);
 	}
 	
@@ -90,6 +94,10 @@ public class TestController extends BaseController {
 		return e;
 	}
 	
+	/**
+	 * redis 频道发布
+	 * @param id
+	 */
 	@RequestMapping(value = "/systempub", method=RequestMethod.GET)
 	public void testRedisPub(String id){
 		stringRedisTemplate.convertAndSend("systemchat",String.valueOf(Math.random()));

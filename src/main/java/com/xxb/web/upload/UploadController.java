@@ -32,7 +32,7 @@ public class UploadController extends BaseController {
 	public String upload(HttpServletRequest request, @RequestParam("file") CommonsMultipartFile file)
 			throws IOException {
 		if (file.getSize() > 0) {
-			String uploadPath = env.getProperty("upload.path");
+			String uploadPath = env.getProperty("config.upload.path");
 			try {
 				FileUtils.copyInputStreamToFile(file.getInputStream(),
 						new File(uploadPath, file.getOriginalFilename()));
@@ -67,7 +67,7 @@ public class UploadController extends BaseController {
 		}
 		for (MultipartFile file : files) {
 			if (file.getSize() > 0) {
-				String uploadPath = env.getProperty("upload.path");
+				String uploadPath = env.getProperty("config.upload.path");
 				try {
 					FileUtils.copyInputStreamToFile(file.getInputStream(),
 							new File(uploadPath, file.getOriginalFilename()));
