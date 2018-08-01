@@ -5,11 +5,16 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xxb.base.BaseController;
 import com.xxb.module.identity.entity.Authority;
 import com.xxb.module.identity.entity.Role;
@@ -51,6 +56,19 @@ public class AuthController extends BaseController {
 	@RequestMapping(value="/role/listbyuser.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listRoleByUser(String userId) {
 		Collection<Role> roles = authService.getRolesByUser(userId);
+		Djson djson = new Djson(Role.class,null,"auths");
+		return handleJsonResult("成功", roles, djson);
+	}
+	
+	@RequestMapping(value="/auth/list.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String listAuths(@RequestBody JSONObject param,@PageableDefault(value = 10, sort = { "createDate" }, direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<Authority> auths = authService.getAuthsPage(param,pageable);
+		return handleResult("成功", auths);
+	}
+	
+	@RequestMapping(value="/role/list.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String listRoles(@RequestBody JSONObject param,@PageableDefault(value = 10, sort = { "createDate" }, direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<Role> roles = authService.getRolesPage(param,pageable);
 		Djson djson = new Djson(Role.class,null,"auths");
 		return handleJsonResult("成功", roles, djson);
 	}

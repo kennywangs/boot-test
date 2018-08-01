@@ -79,6 +79,10 @@ public class UserService extends BaseService<User> {
 		}else {
 			entity = repo.findById(user.getId()).get();
 			entity = PojoConvertUtil.convertPojo(user, User.class, entity);
+			if (StringUtils.isNotEmpty(user.getPassword())) {
+				String pw = DigestUtils.md5Hex(user.getPassword());
+				entity.setPassword(pw);
+			}
 		}
 		entity.setModifyDate(new Date());
 		user = repo.save(entity);

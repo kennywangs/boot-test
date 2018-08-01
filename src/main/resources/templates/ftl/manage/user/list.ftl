@@ -17,88 +17,37 @@
 			<h1 class="mui-title">用户管理</h1>
 		</header>
 		<div class="mui-content">
-			<form id='login-form' class="mui-input-group">
-				<div class="mui-input-row">
-					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
-				</div>
-				<div class="mui-input-row">
-					<label>密码</label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
-				</div>
-				<div class="mui-input-row">
-					<label>确认密码</label>
-					<input id='repassword' type="password" class="mui-input-clear mui-input" placeholder="请再次输入密码">
-				</div>
-				<div class="mui-input-row">
-					<label>手机号</label>
-					<input id='mobile' type="text" class="mui-input-clear mui-input" placeholder="请输入手机号">
-				</div>
-				<div class="mui-input-row">
-					<label>昵称</label>
-					<input id='description' type="text" class="mui-input-clear mui-input" placeholder="请输入一个你喜欢的名字">
-				</div>
-				<input id='type' type="hidden" value="4">
-			</form>
-			<!-- <form class="mui-input-group">
-				<ul class="mui-table-view mui-table-view-chevron">
-					<li class="mui-table-view-cell">
-						自动登录
-						<div id="autoLogin" class="mui-switch">
-							<div class="mui-switch-handle"></div>
+			<div id="user-list">
+				<div id="user-" class="mui-card" onclick="Page.openUser('2c9ad0b6-de25-4b2f-a671-3c41025744dc')">
+					<div class="mui-card-header">
+						张三 | zhangsan
+					</div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+							<p>手机号：13987654123</p>
+							<p>类型：普通用户</p>
+							<p>open id：u1542334</p>
 						</div>
-					</li>
-				</ul>
-			</form> -->
-			<div class="mui-content-padded">
-				<button id='reg' class="mui-btn mui-btn-block mui-btn-primary">马上注册</button>
-				<div class="link-area"><a id='login'>账号登陆</a>
+					</div>
+					<!--页脚，放置补充信息或支持的操作-->
+					<div class="mui-card-footer">
+						创建时间：2018-04-04 12:12:31<br>
+						修改时间：2018-04-04 12:12:31
+					</div>
 				</div>
-			</div>
-			<div class="mui-content-padded oauth-area">
-
 			</div>
 		</div>
 		<script src="/js/mui-min.js"></script>
 		<script src="/js/jquery-3.3.1.min.js"></script>
+		<script src="/js/project/app.js"></script>
 		<script>
-			(function(doc) {
+			(function(Page) {
 				
-				$("#reg").click(function() {
-					var name = $("#account").val();
-					var password = $("#password").val();
-					var repassword = $("#repassword").val();
-					var mobile = $("#mobile").val();
-					var description = $("#description").val();
-					var type = $("#type").val();
-					if (!name||!password||!repassword||!mobile||!description){
-						mui.toast("请把信息填写完整");
-						return;
-					}
-					if (password!=repassword){
-						mui.toast("两次输入的密码不一致，请一定记住密码");
-						return;
-					}
-					var data = {'name':name,'password':password,'mobile':mobile,'description':description,'type':type};
-					$.ajax({
-						url:"http://localhost:8080/system/register_w",
-						type:'POST',
-						contentType:'application/json;charset=UTF-8',
-						dataType:'json',
-						data: JSON.stringify(data),
-						success: function (data) {
-							mui.toast(data.msg);
-							window.location.href = "/login.html";
-						},
-						error: function(data){ console.log(data); }
-					});
-				});
+				Page.openUser = function(id){
+					window.location.href = app.getServerUrl('/manage/user/view?id='+id);
+				}
 				
-				$("#login").click(function() {
-					window.location.href = "/login.html";
-				});
-				
-			}(document));
+			}(Page={}));
 		</script>
 	</body>
 </html>

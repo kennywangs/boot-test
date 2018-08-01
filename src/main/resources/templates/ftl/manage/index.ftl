@@ -19,17 +19,35 @@
 		<div class="mui-content">
 			<ul class="mui-table-view mui-grid-view mui-grid-9">
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="/manage/index">
-						<span class="mui-icon mui-icon-gear"></span>
+					<a href="/manage/user/list">
+						<span class="mui-icon mui-icon-contact"></span>
 						<div class="mui-media-body">用户管理</div>
 					</a>
 				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4"><a href="#">
-					<span class="mui-icon mui-icon-location"></span>
-					<div class="mui-media-body">机构管理</div></a></li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4"><a href="#">
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon mui-icon-flag"></span>
+						<div class="mui-media-body">机构管理</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon mui-icon-gear"></span>
+						<div class="mui-media-body">权限管理</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon mui-icon-gear"></span>
+						<div class="mui-media-body">角色管理</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
 						<span class="mui-icon mui-icon-more"></span>
-						<div class="mui-media-body">预约管理</div></a></li>
+						<div class="mui-media-body">预约管理</div>
+					</a>
+				</li>
 			</ul>
 		</div>
 		<script src="/js/mui-min.js"></script>

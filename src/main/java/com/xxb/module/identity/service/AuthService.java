@@ -1,18 +1,28 @@
 package com.xxb.module.identity.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.xxb.module.base.service.BaseService;
 import com.xxb.module.identity.entity.Authority;
@@ -119,5 +129,53 @@ public class AuthService extends BaseService<Authority> {
 			String authJson = JsonUtils.dateGson.toJson(auth);
 			hops.put(Constant.cacheAuthsKey, auth.getId(), authJson);
 		}
+	}
+
+	public Page<Authority> getAuthsPage(JSONObject searchParam, Pageable pageable) {
+		Specification<Authority> specification = getAuthWhereClause(searchParam);
+		Page<Authority> page = authRepo.findAll(specification, pageable);
+		return page;
+	}
+
+	public Page<Role> getRolesPage(JSONObject searchParam, Pageable pageable) {
+		Specification<Role> specification = getRoleWhereClause(searchParam);
+		Page<Role> page = roleRepo.findAll(specification, pageable);
+		return page;
+	}
+
+	@SuppressWarnings("serial")
+	private Specification<Authority> getAuthWhereClause(JSONObject searchParam) {
+		return new Specification<Authority>() {
+			@Override
+            public Predicate toPredicate(Root<Authority> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				List<Predicate> predicate = new ArrayList<>();
+				if (searchParam.containsKey("name")) {
+                    predicate.add(cb.like(root.get("name").as(String.class), searchParam.getString("name")));
+                }
+				if (searchParam.containsKey("authUrl")) {
+                    predicate.add(cb.like(root.get("authUrl").as(String.class), searchParam.getString("authUrl")));
+                }
+				Predicate[] pre = new Predicate[predicate.size()];
+				return query.where(predicate.toArray(pre)).getRestriction();
+			}
+		};
+	}
+
+	@SuppressWarnings("serial")
+	private Specification<Role> getRoleWhereClause(JSONObject searchParam) {
+		return new Specification<Role>() {
+			@Override
+            public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				List<Predicate> predicate = new ArrayList<>();
+				if (searchParam.containsKey("name")) {
+                    predicate.add(cb.like(root.get("name").as(String.class), searchParam.getString("name")));
+                }
+				if (searchParam.containsKey("description")) {
+                    predicate.add(cb.like(root.get("description").as(String.class), searchParam.getString("description")));
+                }
+				Predicate[] pre = new Predicate[predicate.size()];
+				return query.where(predicate.toArray(pre)).getRestriction();
+			}
+		};
 	}
 }
