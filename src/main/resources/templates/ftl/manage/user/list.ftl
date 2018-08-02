@@ -18,21 +18,22 @@
 		</header>
 		<div class="mui-content">
 			<div id="user-list">
-				<div id="user-" class="mui-card" onclick="Page.openUser('2c9ad0b6-de25-4b2f-a671-3c41025744dc')">
+				<div v-for="user in users" class="mui-card" @click="Page.openUser(user.id)">
 					<div class="mui-card-header">
-						张三 | zhangsan
+						{{ user.description }} | {{ user.name }}
 					</div>
 					<div class="mui-card-content">
 						<div class="mui-card-content-inner">
-							<p>手机号：13987654123</p>
-							<p>类型：普通用户</p>
-							<p>open id：u1542334</p>
+							<p>手机号：{{ user.mobile }}</p>
+							<p>类型：{{ user.type }}</p>
+							<p>open id：{{ user.openId }}</p>
 						</div>
 					</div>
 					<!--页脚，放置补充信息或支持的操作-->
 					<div class="mui-card-footer">
-						创建时间：2018-04-04 12:12:31<br>
-						修改时间：2018-04-04 12:12:31
+						创建时间：{{ user.createDate }}<br>
+						修改时间：{{ user.modifyDate }}
+						<button class="mui-btn mui-btn-primary" @click.stop="Page.openRole(user.id,$event)">角色</button>
 					</div>
 				</div>
 			</div>
@@ -40,12 +41,43 @@
 		<script src="/js/mui-min.js"></script>
 		<script src="/js/jquery-3.3.1.min.js"></script>
 		<script src="/js/project/app.js"></script>
+		<script src="/js/vue.min.js"></script>
 		<script>
 			(function(Page) {
+				Page.userVm = new Vue({
+					el: '#user-list',
+					data: {
+						users: []
+					}
+				});
 				
 				Page.openUser = function(id){
 					window.location.href = app.getServerUrl('/manage/user/view?id='+id);
 				}
+				Page.openRole = function(id,ev){
+					ev.preventDefault();
+					//console.log(ev.target);
+					console.log(id);
+				}
+				Page.searchParam = {};
+				
+				$.ajax({
+					url:app.getServerUrl('/user/search.do'),
+					type:'POST',
+					contentType:'application/json;charset=UTF-8',
+					dataType:'json',
+					data: JSON.stringify(Page.searchParam),
+					success: function (data) {
+						Page.userVm.users = data.data;
+						/* $("#account").val(Page.user.name);
+						$("#mobile").val(Page.user.mobile);
+						$("#description").val(Page.user.description);
+						$("#type").val(Page.user.type);
+						$("#open-id").val(Page.user.openId); */
+						mui.toast(data.msg);
+					},
+					error: function(data){ mui.toast(data.msg); }
+				});
 				
 			}(Page={}));
 		</script>

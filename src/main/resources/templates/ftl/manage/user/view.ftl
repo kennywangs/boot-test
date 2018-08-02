@@ -52,10 +52,7 @@
 		<script src="/js/project/app.js?v=1"></script>
 		<script>
 			(function(Page) {
-				Page={
-					params : app.parseParams(window.location.href)
-				};
-				
+				Page.params = app.parseParams(window.location.href);
 				Page.userId=Page.params.id;
 				
 				$.ajax({

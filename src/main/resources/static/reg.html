@@ -61,6 +61,7 @@
 		</div>
 		<script src="/js/mui-min.js"></script>
 		<script src="/js/jquery-3.3.1.min.js"></script>
+		<script src="/js/project/app.js"></script>
 		<script>
 			(function(doc) {
 				
@@ -81,7 +82,7 @@
 					}
 					var data = {'name':name,'password':password,'mobile':mobile,'description':description,'type':type};
 					$.ajax({
-						url:"http://localhost:8080/system/register_w",
+						url:app.getServerUrl('/system/register_w'),
 						type:'POST',
 						contentType:'application/json;charset=UTF-8',
 						dataType:'json',
