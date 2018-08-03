@@ -84,7 +84,9 @@ public class UserService extends BaseService<User> {
 				entity.setPassword(pw);
 			}
 		}
-		entity.setModifyDate(new Date());
+		if (user.getRoles()==null || user.getRoles().isEmpty()) {
+			entity.setModifyDate(new Date());
+		}
 		user = repo.save(entity);
 		return user;
 	}
@@ -106,6 +108,12 @@ public class UserService extends BaseService<User> {
                 }
                 if (searchParam.containsKey("startDate")) {
                     predicate.add(cb.greaterThanOrEqualTo(root.get("createDate").as(Date.class), searchParam.getDate("startDate")));
+                }
+                if (searchParam.containsKey("namesearch")) {
+                	Predicate p1 = cb.like(root.get("name").as(String.class), "%"+searchParam.getString("namesearch")+"%");
+                	Predicate p2 = cb.like(root.get("description").as(String.class), "%"+searchParam.getString("namesearch")+"%");
+                	
+                    predicate.add(cb.or(p1,p2));
                 }
                 Predicate[] pre = new Predicate[predicate.size()];
                 return query.where(predicate.toArray(pre)).getRestriction();

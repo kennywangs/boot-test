@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -64,7 +63,7 @@ public class Role implements Serializable {
 	@Column(name = "role_type")
 	private Integer roleType = Role.ROLE_TYPE_SYS;
 	
-	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "id_role_auth", joinColumns = {@JoinColumn(name="role_id")},inverseJoinColumns={@JoinColumn(name="auth_id")})
 	private Set<Authority> auths;
 

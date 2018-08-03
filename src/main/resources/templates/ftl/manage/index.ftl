@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title>管理中心</title>
 		<link href="/css/mui-min.css" rel="stylesheet" />
-		<link href="/css/project.css" rel="stylesheet" />
+		<link href="/css/project.css?v=1" rel="stylesheet" />
 		<style type="text/css">
 			.mui-input-group{
 				margin-top: 10px;
@@ -18,6 +18,12 @@
 		</header>
 		<div class="mui-content">
 			<ul class="mui-table-view mui-grid-view mui-grid-9">
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="/index.html">
+						<span class="mui-icon mui-icon-home"></span>
+						<div class="mui-media-body">首页</div>
+					</a>
+				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
 					<a href="/manage/user/list">
 						<span class="mui-icon mui-icon-contact"></span>
@@ -32,19 +38,19 @@
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
 					<a href="#">
-						<span class="mui-icon mui-icon-gear"></span>
+						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">权限管理</div>
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
 					<a href="#">
-						<span class="mui-icon mui-icon-gear"></span>
+						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">角色管理</div>
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
 					<a href="#">
-						<span class="mui-icon mui-icon-more"></span>
+						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">预约管理</div>
 					</a>
 				</li>

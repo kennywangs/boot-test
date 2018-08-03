@@ -15,4 +15,13 @@
 	    while ( e = re.exec(url) ) params[ decode(e[1]) ] = decode( e[2] );
 	    return params;
 	};
+	owner.containInList = function(list,key,value){
+		var ret = false;
+		$.each(list,function(i,item){
+			if (item[key]==value){
+				ret = true;
+			}
+		});
+		return ret;
+	}
 }(window.app = {}));

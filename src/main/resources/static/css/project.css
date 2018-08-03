@@ -2,3 +2,16 @@ body{
 	margin: auto;
 	max-width: 1000px;
 }
+header{
+	margin: auto;
+	max-width: 1000px;
+}
+.pro-row{
+	padding:5px 10px;
+	text-align: center;
+}
+.title {
+    margin: 20px 15px 7px;
+    color: #6d6d72;
+    font-size: 15px;
+}
