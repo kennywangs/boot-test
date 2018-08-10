@@ -21,6 +21,8 @@ import com.xxb.module.identity.service.UserService;
 import com.xxb.util.Constant;
 import com.xxb.util.JsonUtils;
 import com.xxb.util.TokenUtils;
+import com.xxb.util.fastjson.FastJsonUtils;
+import com.xxb.util.fastjson.JsonFilter;
 import com.xxb.util.jackson.Djson;
 import com.xxb.util.jackson.JacksonJsonUtil;
 
@@ -118,6 +120,18 @@ public abstract class BaseController {
 		} catch (JsonProcessingException e) {
 			return handleError("获取失败!",e);
 		}
+	}
+	
+	public <T> String handleFastJsonPage(String msg, Page<T> page,JsonFilter... filters) {
+		ServiceResult result = new ServiceResult(msg,page.getContent());
+		result.setTotalNumber(page.getTotalElements());
+		result.setTotalPage(page.getTotalPages());
+		return FastJsonUtils.writeJson(result, filters);
+	}
+	
+	public String handleFastJsonResult(String msg, Object data,JsonFilter... filters) {
+		ServiceResult result = new ServiceResult(msg, data);
+		return FastJsonUtils.writeJson(result, filters);
 	}
 	
 	protected String getCookieToken(HttpServletRequest request) {

@@ -63,14 +63,14 @@ public class AuthController extends BaseController {
 	@RequestMapping(value="/auth/list.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listAuths(@RequestBody JSONObject param,@PageableDefault(value = 10, sort = { "createDate" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<Authority> auths = authService.getAuthsPage(param,pageable);
-		return handleResult("成功", auths);
+		return handlePageResult("成功", auths);
 	}
 	
 	@RequestMapping(value="/role/list.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String listRoles(@RequestBody JSONObject param,@PageableDefault(value = 10, sort = { "createDate" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<Role> roles = authService.getRolesPage(param,pageable);
 		Djson djson = new Djson(Role.class,null,"auths");
-		return handleJsonResult("成功", roles, djson);
+		return handleJsonPageResult("成功", roles, djson);
 	}
 	
 	@RequestMapping(value="/auth/refreshcache.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
