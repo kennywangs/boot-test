@@ -11,7 +11,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         hbm2ddl:
-          auto: validate
+          auto: update
         temp:
           use_jdbc_metadata_defaults: false
     show-sql: true

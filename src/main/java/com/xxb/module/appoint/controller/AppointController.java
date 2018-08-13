@@ -64,13 +64,13 @@ public class AppointController extends BaseController {
 	 * @return
 	 */
 	@GetMapping(value="/mylist.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String listCustomerAppoints(@RequestParam int page, @RequestParam int size, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date date, HttpServletRequest request) {
+	public String listCustomerAppoints(@RequestParam int page, @RequestParam int size, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date, HttpServletRequest request) {
 		try {
 			User user = getCurrentUser(request);
 			Pageable pageable = PageRequest.of(page, size, new Sort(Direction.DESC, "startDate"));
 			Page<Appoint> resultPage = appointService.listAppointByDate(user.getId(),null,date,pageable);
-			JsonFilter aFilter = new JsonFilter(Appoint.class,null,"customer");
-			JsonFilter uFilter = new JsonFilter(User.class,null,"password,roles,group");
+			JsonFilter aFilter = new JsonFilter(Appoint.class,null,"customer,operator");
+			JsonFilter uFilter = new JsonFilter(User.class,null,"password,roles,group,createDate,modifyDate");
 			return handleFastJsonPage("获取成功", resultPage, aFilter, uFilter);
 		} catch (Exception e) {
 			return handleError("获取失败.",e);
