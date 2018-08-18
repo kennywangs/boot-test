@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xxb.base.ProjectException;
 import com.xxb.module.base.service.BaseService;
 import com.xxb.module.identity.entity.Group;
+import com.xxb.module.identity.entity.Role;
 import com.xxb.module.identity.entity.User;
 import com.xxb.module.identity.repository.UserRepository;
 import com.xxb.util.PojoConvertUtil;
@@ -108,6 +109,10 @@ public class UserService extends BaseService<User> {
                 }
                 if (searchParam.containsKey("startDate")) {
                     predicate.add(cb.greaterThanOrEqualTo(root.get("createDate").as(Date.class), searchParam.getDate("startDate")));
+                }
+                if (searchParam.containsKey("roleName")) {
+                	Join<User,Role> roleJoin = root.join("roles",JoinType.LEFT);
+                	predicate.add(cb.like(roleJoin.get("name").as(String.class), searchParam.getString("roleName")));
                 }
                 if (searchParam.containsKey("namesearch")) {
                 	Predicate p1 = cb.like(root.get("name").as(String.class), "%"+searchParam.getString("namesearch")+"%");

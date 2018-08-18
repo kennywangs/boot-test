@@ -49,7 +49,7 @@
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a href="/manage/appoint/list">
 						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">预约管理</div>
 					</a>

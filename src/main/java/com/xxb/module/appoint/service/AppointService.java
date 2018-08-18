@@ -41,7 +41,7 @@ public class AppointService extends BaseService<Appoint> {
 		return repo.save(appoint);
 	}
 	
-	public void comfirmAppoint(String appointId, User user) {
+	public void confirmAppoint(String appointId, User user) {
 		Appoint appoint = repo.findById(appointId).get();
 		if (appoint==null) {
 			throw new ProjectException("没有这个预约");
@@ -59,6 +59,14 @@ public class AppointService extends BaseService<Appoint> {
 		appoint.setOperator(user.getId());
 		appoint.setStatus(Appoint.STATUS_CANCEL);
 		repo.save(appoint);
+	}
+	
+	public void deleteAppoint(String appointId) {
+		Appoint appoint = repo.findById(appointId).get();
+		if (appoint==null) {
+			throw new ProjectException("没有这个预约");
+		}
+		repo.delete(appoint);
 	}
 	
 	@Transactional(readOnly = true)

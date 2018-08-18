@@ -23,5 +23,8 @@
 			}
 		});
 		return ret;
-	}
+	};
+	owner.toInt = function(number) {
+	    return Infinity === number ? 0 : (number*1 || 0).toFixed(0)*1;
+	};
 }(window.app = {}));

@@ -21,8 +21,7 @@
 		<div class="mui-content">
 			<div id="appoint-page">
 				<div class="pro-row">
-					<button id="create-appoint" class="mui-btn mui-btn-primary">创建预约</button>
-					<button id="list-appoint" class="mui-btn mui-btn-primary">查看我的预约</button>
+					<button id="list-appoint" class="mui-btn mui-btn-primary">查看预约</button>
 				</div>
 				<div id="appoint-list">
 					<div v-for="appoint in appoints" class="mui-card">
@@ -31,6 +30,7 @@
 						</div>
 						<div class="mui-card-content">
 							<div class="mui-card-content-inner">
+								<p>客户名称：{{ appoint.customer.description }}</p>
 								<p>服务技师：{{ appoint.attendant.description }}</p>
 								<p>预约状态：{{ getStatusText(appoint.status) }}</p>
 								<p>留言：{{ appoint.comment }}</p>
@@ -39,7 +39,11 @@
 						<!--页脚，放置补充信息或支持的操作-->
 						<div class="mui-card-footer">
 							发起预约时间：{{ appoint.createDate }}
-							<button class="mui-btn mui-btn-primary" v-show="appoint.status == 1" @click.stop="cancelAppoint(appoint)">取消</button>
+							<div>
+								<button class="mui-btn mui-btn-primary" v-show="appoint.status == 1" @click.stop="confirmAppoint(appoint)">确认</button>
+								<button class="mui-btn mui-btn-primary" v-show="appoint.status == 1" @click.stop="cancelAppoint(appoint)">取消</button>
+								<button class="mui-btn mui-btn-primary" v-show="user.type == 1" @click.stop="deleteAppoint(appoint)">删除</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -111,6 +115,7 @@
 				Page.appointVm = new Vue({
 					el: '#appoint-list',
 					data:{
+						user:{},
 						appoints: []
 					},
 					methods:{
@@ -136,13 +141,60 @@
 									console.log(obj.msg);
 								}
 							});
+						},
+						confirmAppoint : function(appoint){
+							$.ajax({
+								url:app.getServerUrl('/appoint/attendant/confirm.do'),
+								dataType:'json',
+								data: {id:appoint.id},
+								success: function (data) {
+									Page.postList();
+									console.log(data.msg);
+								},
+								error: function(data){
+									obj = JSON.parse(data.responseText);
+									console.log(obj.msg);
+								}
+							});
+						},
+						deleteAppoint : function(appoint){
+							$.ajax({
+								url:app.getServerUrl('/appoint/attendant/delete.do'),
+								dataType:'json',
+								data: {id:appoint.id},
+								success: function (data) {
+									Page.postList();
+									console.log(data.msg);
+								},
+								error: function(data){
+									obj = JSON.parse(data.responseText);
+									console.log(obj.msg);
+								}
+							});
 						}
+					}
+				});
+				
+				$.ajax({
+					url:app.getServerUrl("/system/getuser"),
+					type:'GET',
+					dataType:'json',
+					success: function (data) {
+						mui.toast(data.msg);
+						if (data.success){
+							app.user=data.data;
+							Page.appointVm.user=data.data;
+						}
+					},
+					error: function(data){
+						mui.toast(data.msg);
+						console.log(data);
 					}
 				});
 				
 				Page.postList = function(more){
 					$.ajax({
-						url:app.getServerUrl('/customer/appoint/mylist'),
+						url:app.getServerUrl('/appoint/attendant/mylist.do'),
 						dataType:'json',
 						data: {page:0,size:100,date:Page.dateStr},
 						success: function (data) {
