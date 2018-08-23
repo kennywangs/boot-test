@@ -24,25 +24,28 @@
 					<button id="create-appoint" class="mui-btn mui-btn-primary">创建预约</button>
 					<button id="list-appoint" class="mui-btn mui-btn-primary">查看我的预约</button>
 				</div>
-				<div id="appoint-list">
-					<div v-for="appoint in appoints" class="mui-card">
-						<div class="mui-card-header">
-							预约时间：{{ appoint.startDate }} —— {{ appoint.endDate }}
-						</div>
-						<div class="mui-card-content">
-							<div class="mui-card-content-inner">
-								<p>服务技师：{{ appoint.attendant.description }}</p>
-								<p>预约状态：{{ getStatusText(appoint.status) }}</p>
-								<p>留言：{{ appoint.comment }}</p>
+				<div id="appoint-list"></div>
+				<template id="appoint-list-template">
+					<div>
+						<div v-for="appoint in appoints" class="mui-card">
+							<div class="mui-card-header">
+								预约时间：{{ appoint.startDate }} —— {{ appoint.endDate }}
+							</div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+									<p>服务技师：{{ appoint.attendant.description }}</p>
+									<p>预约状态：{{ getStatusText(appoint.status) }}</p>
+									<p>留言：{{ appoint.comment }}</p>
+								</div>
+							</div>
+							<!--页脚，放置补充信息或支持的操作-->
+							<div class="mui-card-footer">
+								发起预约时间：{{ appoint.createDate }}
+								<button class="mui-btn mui-btn-primary" v-show="appoint.status == 1" @click.stop="cancelAppoint(appoint)">取消</button>
 							</div>
 						</div>
-						<!--页脚，放置补充信息或支持的操作-->
-						<div class="mui-card-footer">
-							发起预约时间：{{ appoint.createDate }}
-							<button class="mui-btn mui-btn-primary" v-show="appoint.status == 1" @click.stop="cancelAppoint(appoint)">取消</button>
-						</div>
 					</div>
-				</div>
+				</template>
 				<div class="pro-row">
 					<button id="load-more" class="mui-btn mui-btn-primary" style="display: none;">加载更多...</button>
 				</div>
@@ -71,11 +74,19 @@
 					<input id="attendant" type="hidden">
 				</form>
 				
-				<div id="role-popover" class="mui-popover">
-					<ul v-for="user in users" class="mui-table-view">
-						<li class="mui-table-view-cell"><a @click.stop="pickattendant(user)">{{ user.description }}</a></li>
-					</ul>
+				
+				<div id="role-list">
 				</div>
+				
+				<template id="role-list-template">
+					<div id="role-popover" class="mui-popover">
+					<div>
+						<ul v-for="user in users" class="mui-table-view">
+							<li class="mui-table-view-cell"><a @click.stop="pickattendant(user)">{{ user.description }}</a></li>
+						</ul>
+					</div>
+					</div>
+				</template>
 				
 				<div class="pro-row" style="margin-top:10px;background-color: #fff;">
 					<button id="appoint-confirm" class="mui-btn mui-btn-primary">确认</button>
@@ -92,10 +103,11 @@
 		<script>
 			(function(Page) {
 				Page.attendantVm = new Vue({
-					el: '#role-popover',
+					el: '#role-list',
 					data: {
 						users: []
 					},
+					template: '#role-list-template',
 					methods:{
 						pickattendant : function(user){
 							$('#aname').val(user.description);
@@ -110,11 +122,12 @@
 				
 				Page.appointVm = new Vue({
 					el: '#appoint-list',
-					data:{
+					data: {
 						appoints: []
 					},
-					methods:{
-						getStatusText : function(status){
+					template: '#appoint-list-template',
+					methods: {
+						getStatusText: function(status){
 							if (status==1)
 								return "等待确认";
 							if (status==10)
@@ -122,10 +135,10 @@
 							if (status==99)
 								return "已取消";
 						},
-						cancelAppoint : function(appoint){
+						cancelAppoint: function(appoint){
 							$.ajax({
-								url:app.getServerUrl('/customer/appoint/cancel'),
-								dataType:'json',
+								url: app.getServerUrl('/customer/appoint/cancel'),
+								dataType: 'json',
 								data: {id:appoint.id},
 								success: function (data) {
 									Page.postList();
@@ -210,6 +223,15 @@
 					var comment = $('#comment').val();
 					var attendantId = $('#attendant').val();
 					var startDate = DateUtils.Date.fromString(startDateStr,'yyyy-MM-dd hh');
+					var now = new Date();
+					if (startDate<now ){
+						mui.toast("预约时间不正确");
+						return;
+					}
+					if (!attendantId){
+						mui.toast("请选择一个技师");
+						return;
+					}
 					var endDate = DateUtils.Date.increase(startDate,time,'h');
 					var endDateStr = DateUtils.Date.toString(endDate,DateUtils.Date.DEFAULT_FORMAT1);
 					var data = {attendant:{id:attendantId},comment:comment,startDate:startDateStr,endDate:endDateStr};
