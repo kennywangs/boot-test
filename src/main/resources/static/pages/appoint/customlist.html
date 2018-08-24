@@ -1,106 +1,117 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>我的预约</title>
-		<link href="/css/mui-min.css" rel="stylesheet" />
-		<link href="/css/mui.picker.min.css?v=1" rel="stylesheet" />
-		<link href="/css/project.css?v=1" rel="stylesheet" />
-		<style type="text/css">
-			.mui-input-group{
-				margin-top: 10px;
-			}
-		</style>
-	</head>
-	<body>
-		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">我的预约</h1>
-		</header>
-		<div class="mui-content">
-			<div id="appoint-page">
-				<div class="pro-row">
-					<button id="create-appoint" class="mui-btn mui-btn-primary">创建预约</button>
-					<button id="list-appoint" class="mui-btn mui-btn-primary">查看我的预约</button>
-				</div>
-				<div id="appoint-list"></div>
-				<template id="appoint-list-template">
-					<div>
-						<div v-for="appoint in appoints" class="mui-card">
-							<div class="mui-card-header">
-								预约时间：{{ appoint.startDate }} —— {{ appoint.endDate }}
-							</div>
-							<div class="mui-card-content">
-								<div class="mui-card-content-inner">
-									<p>服务技师：{{ appoint.attendant.description }}</p>
-									<p>预约状态：{{ getStatusText(appoint.status) }}</p>
-									<p>留言：{{ appoint.comment }}</p>
-								</div>
-							</div>
-							<!--页脚，放置补充信息或支持的操作-->
-							<div class="mui-card-footer">
-								发起预约时间：{{ appoint.createDate }}
-								<button class="mui-btn mui-btn-primary" v-show="appoint.status == 1" @click.stop="cancelAppoint(appoint)">取消</button>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>我的预约</title>
+<link href="/css/mui-min.css" rel="stylesheet" />
+<link href="/css/mui.picker.min.css?v=1" rel="stylesheet" />
+<link href="/css/project.css?v=1" rel="stylesheet" />
+<style type="text/css">
+.mui-input-group {
+	margin-top: 10px;
+}
+</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">我的预约</h1>
+	</header>
+	<div class="mui-content">
+		<div id="appoint-page">
+			<div class="pro-row">
+				<button id="create-appoint" class="mui-btn mui-btn-primary">创建预约</button>
+				<button id="list-appoint" class="mui-btn mui-btn-primary">查看我的预约</button>
+			</div>
+			<div id="appoint-list"></div>
+			<template id="appoint-list-template">
+				<div>
+					<div v-for="appoint in appoints" class="mui-card">
+						<div class="mui-card-header">预约时间：{{ appoint.startDate }} ——
+							{{ appoint.endDate }}</div>
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner">
+								<p>服务技师：{{ appoint.attendant.description }}</p>
+								<p>预约状态：{{ getStatusText(appoint.status) }}</p>
+								<p>留言：{{ appoint.comment }}</p>
 							</div>
 						</div>
+						<!--页脚，放置补充信息或支持的操作-->
+						<div class="mui-card-footer">
+							发起预约时间：{{ appoint.createDate }}
+							<button class="mui-btn mui-btn-primary"
+								v-show="appoint.status == 1" @click.stop="cancelAppoint(appoint)">取消</button>
+						</div>
 					</div>
-				</template>
-				<div class="pro-row">
-					<button id="load-more" class="mui-btn mui-btn-primary" style="display: none;">加载更多...</button>
 				</div>
-			</div>
-			<div id="create-page" style="display: none;">
-				<div class="title">创建预约</div>
-				<form id='appoint-form' class="mui-input-group">
-					<div class="mui-input-row">
-						<label>技师</label>
-						<a id="pick-attendant" class="mui-btn mui-btn-primary">选择技师</a>
-						<input id="aname" type="text" class="mui-input-clear mui-input" style="width:50%" readonly="readonly">
-					</div>
-					<div class="mui-input-row">
-						<label>预约时间</label>
-						<a id="pick-start" class="mui-btn mui-btn-primary">选择时间</a>
-						<input id="startDate" type="text" class="mui-input-clear mui-input" style="width:50%" readonly="readonly">
-					</div>
-					<div class="mui-input-row">
-						<label>预约时长</label>
-						<input id="time" type="number" min="1" max="10" class="mui-input-clear mui-input" placeholder="请输入整数">
-					</div>
-					<div class="mui-input-row">
-						<label>留言</label>
-						<input id="comment" type="text" class="mui-input-clear mui-input"></input>
-					</div>
-					<input id="attendant" type="hidden">
-				</form>
-				
-				
-				<div id="role-list">
-				</div>
-				
-				<template id="role-list-template">
-					<div id="role-popover" class="mui-popover">
-					<div>
-						<ul v-for="user in users" class="mui-table-view">
-							<li class="mui-table-view-cell"><a @click.stop="pickattendant(user)">{{ user.description }}</a></li>
-						</ul>
-					</div>
-					</div>
-				</template>
-				
-				<div class="pro-row" style="margin-top:10px;background-color: #fff;">
-					<button id="appoint-confirm" class="mui-btn mui-btn-primary">确认</button>
-					<button id="back-list" class="mui-btn mui-btn-primary">返回</button>
-				</div>
+			</template>
+			<div class="pro-row">
+				<button id="load-more" class="mui-btn mui-btn-primary"
+					style="display: none;">加载更多...</button>
 			</div>
 		</div>
-		<script src="/js/mui-min.js"></script>
-		<script src="/js/mui.picker.min.js?v=2"></script>
-		<script src="/js/jquery-3.3.1.min.js"></script>
-		<script src="/js/project/app.js?v=1"></script>
-		<script src="/js/date.js"></script>
-		<script src="/js/vue.min.js"></script>
-		<script>
+		<div id="create-page" style="display: none;">
+			<div class="title">创建预约</div>
+			<form id='appoint-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>技师</label> <a id="pick-attendant"
+						class="mui-btn mui-btn-primary">选择技师</a> <input id="aname"
+						type="text" class="mui-input-clear mui-input" style="width: 50%"
+						readonly="readonly">
+				</div>
+				<div class="mui-input-row">
+					<label>预约时间</label> <a id="pick-start"
+						class="mui-btn mui-btn-primary">选择时间</a> <input id="startDate"
+						type="text" class="mui-input-clear mui-input" style="width: 50%"
+						readonly="readonly">
+				</div>
+				<div class="mui-input-row">
+					<label>预约时长</label>
+					<div class="mui-numbox" data-numbox-min="1" data-numbox-max="10">
+						<!-- "-"按钮，点击可减小当前数值 -->
+						<button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+						<input id="time" class="mui-numbox-input" type="number" placeholder="请输入整数" />
+						<!-- "+"按钮，点击可增大当前数值 -->
+						<button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<label>留言</label> <input id="comment" type="text"
+						class="mui-input-clear mui-input"></input>
+				</div>
+				<input id="attendant" type="hidden">
+			</form>
+
+
+			<div id="role-list"></div>
+
+			<template id="role-list-template">
+				<div id="role-popover" class="mui-popover">
+					<div>
+						<ul v-for="user in users" class="mui-table-view">
+							<li class="mui-table-view-cell"><a
+								@click.stop="pickattendant(user)">{{ user.description }}</a></li>
+						</ul>
+					</div>
+				</div>
+			</template>
+
+			<div class="pro-row"
+				style="margin-top: 10px; background-color: #fff;">
+				<button id="appoint-confirm" class="mui-btn mui-btn-primary">确认</button>
+				<button id="back-list" class="mui-btn mui-btn-primary">返回</button>
+			</div>
+		</div>
+	</div>
+	<script src="/js/mui-min.js"></script>
+	<script src="/js/mui.picker.min.js?v=2"></script>
+	<script src="/js/jquery-3.3.1.min.js"></script>
+	<script src="/js/project/app.js?v=1"></script>
+	<script src="/js/date.js"></script>
+	<script src="/js/vue.min.js"></script>
+	<script>
 			(function(Page) {
 				Page.attendantVm = new Vue({
 					el: '#role-list',
@@ -213,12 +224,7 @@
 					}
 				});
 				$('#appoint-confirm').click(function(){
-					var time = app.toInt($('#time').val());
-					if (time <= 0){
-						mui.toast("预约时长不正确");
-						return;
-					}
-					$('#time').val(time);
+					var time = $('#time').val();
 					var startDateStr = $('#startDate').val();
 					var comment = $('#comment').val();
 					var attendantId = $('#attendant').val();
@@ -272,5 +278,5 @@
 				
 			}(Page={}));
 		</script>
-	</body>
+</body>
 </html>

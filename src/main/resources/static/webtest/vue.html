@@ -17,7 +17,9 @@
 <body>
 	<div id="app">
 		<button-counter ref="comp"></button-counter>
+		<comp1 ref="comp1"></comp1>
 	</div>
+	<div id="comp-test"></div>
 	<script type="x-template" id="demo4">
 		<div>
 			<button v-on:click="count++">You clicked me {{ count }} times.</button>
@@ -27,6 +29,7 @@
 		</div>
 	</script>
 	<script src="/js/vue.min.js"></script>
+	<script src="/webtest/comp1.js"></script>
 	<script>
 		Vue.component('button-counter', {
 		  data: function () {
@@ -50,6 +53,7 @@
 		console.log(vm);
 		vm.$refs.comp.changeVal([{"text":"2"},{"text":"3"}]);
 		vm.$children[0].pushVal({"text":"4"});
+		
 	</script>
 </body>
 </html>
