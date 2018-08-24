@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mysql:
+    container_name: v-mysql
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    volumes:
+      - /data/mysql/db:/var/lib/mysql
+      - /data/mysql/conf/my.cnf:/etc/my.cnf
+  redis:
+    container_name: v-redis
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - "/data/redis/db:/data"
+      - "/data/redis:/etc/redis"
+    command: redis-server /etc/redis/redis.conf
