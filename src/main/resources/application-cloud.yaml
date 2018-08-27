@@ -1,6 +1,6 @@
 spring:
   profiles: cloud
-  # postgresql
+  # datasource
   datasource:
     url: jdbc:mysql://mysql:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root

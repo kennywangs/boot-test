@@ -16,7 +16,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">我的预约</h1>
+			<h1 class="mui-title">我的预约管理</h1>
 		</header>
 		<div class="mui-content">
 			<div id="appoint-page">
@@ -175,6 +175,11 @@
 					}
 				});
 				
+				Page.setDefaultPageParam = function(){
+					this.no=0;
+					this.limit=10;
+				};
+				
 				$.ajax({
 					url:app.getServerUrl("/system/getuser"),
 					type:'GET',
@@ -193,12 +198,32 @@
 				});
 				
 				Page.postList = function(more){
+					if (more){
+						Page.no++;
+					}else{
+						Page.setDefaultPageParam();
+					}
 					$.ajax({
 						url:app.getServerUrl('/appoint/attendant/mylist.do'),
 						dataType:'json',
-						data: {page:0,size:100,date:Page.dateStr},
+						data: {page:Page.no,size:Page.limit,date:Page.dateStr},
 						success: function (data) {
-							Page.appointVm.appoints=data.data;
+							if (data.success){
+								if (more){
+									$.each(data.data,function(i,item){
+										Page.appointVm.appoints.push(item);
+									});
+								}else{
+									Page.appointVm.appoints=data.data;
+								}
+								if ((Page.no+1)<data.totalPage){
+									$('#load-more').show();
+								}else{
+									$('#load-more').hide();
+								}
+							}else{
+								mui.toast(data.msg);
+							}
 							console.log(data.msg);
 						},
 						error: function(data){
@@ -209,11 +234,7 @@
 				};
 				
 				// 初始化列表
-				
-				$('#user-search').click(function(){
-					Page.setDefaultPagePram();
-					Page.postSearch();
-				});
+				Page.setDefaultPageParam();
 				
 				// 选择开始时间
 				var startPicker = new mui.DtPicker({'type':'hour'});
@@ -243,14 +264,6 @@
 					});
 				});
 				
-				$('#user-param').keypress(function(e){
-					if(event.keyCode == "13") {
-						document.activeElement.blur();
-						Page.setDefaultPagePram();
-						Page.postSearch();
-						event.preventDefault();
-					}
-				});
 				$('#appoint-confirm').click(function(){
 					var time = app.toInt($('#time').val());
 					if (time <= 0){
@@ -286,6 +299,9 @@
 				$('#back-list').click(function(){
 					$('#appoint-page').toggle();
 					$('#create-page').toggle();
+				});
+				$('#load-more').click(function(){
+					Page.postList(true);
 				});
 				$('#create-appoint').click(function(){
 					$('#appoint-page').toggle();

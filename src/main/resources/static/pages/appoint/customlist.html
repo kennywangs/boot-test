@@ -38,7 +38,6 @@
 								<p>留言：{{ appoint.comment }}</p>
 							</div>
 						</div>
-						<!--页脚，放置补充信息或支持的操作-->
 						<div class="mui-card-footer">
 							发起预约时间：{{ appoint.createDate }}
 							<button class="mui-btn mui-btn-primary"
@@ -47,6 +46,7 @@
 					</div>
 				</div>
 			</template>
+			<!-- 加载更多 -->
 			<div class="pro-row">
 				<button id="load-more" class="mui-btn mui-btn-primary"
 					style="display: none;">加载更多...</button>
@@ -164,13 +164,38 @@
 					}
 				});
 				
+				Page.setDefaultPageParam = function(){
+					this.no=0;
+					this.limit=10;
+				};
+				
 				Page.postList = function(more){
+					if (more){
+						Page.no++;
+					}else{
+						Page.setDefaultPageParam();
+					}
 					$.ajax({
 						url:app.getServerUrl('/customer/appoint/mylist'),
 						dataType:'json',
-						data: {page:0,size:100,date:Page.dateStr},
+						data: {page:Page.no,size:Page.limit,date:Page.dateStr},
 						success: function (data) {
-							Page.appointVm.appoints=data.data;
+							if (data.success){
+								if (more){
+									$.each(data.data,function(i,item){
+										Page.appointVm.appoints.push(item);
+									});
+								}else{
+									Page.appointVm.appoints=data.data;
+								}
+								if ((Page.no+1)<data.totalPage){
+									$('#load-more').show();
+								}else{
+									$('#load-more').hide();
+								}
+							}else{
+								mui.toast(data.msg);
+							}
 							console.log(data.msg);
 						},
 						error: function(data){
@@ -181,10 +206,10 @@
 				};
 				
 				// 初始化列表
+				Page.setDefaultPageParam();
 				
-				$('#user-search').click(function(){
-					Page.setDefaultPagePram();
-					Page.postSearch();
+				$('#load-more').click(function(){
+					Page.postList(true);
 				});
 				
 				// 选择开始时间
@@ -215,14 +240,6 @@
 					});
 				});
 				
-				$('#user-param').keypress(function(e){
-					if(event.keyCode == "13") {
-						document.activeElement.blur();
-						Page.setDefaultPagePram();
-						Page.postSearch();
-						event.preventDefault();
-					}
-				});
 				$('#appoint-confirm').click(function(){
 					var time = $('#time').val();
 					var startDateStr = $('#startDate').val();
@@ -272,7 +289,7 @@
 						Page.dateStr = item.y.text+'-'+item.m.text+'-'+item.d.text;
 						console.log(Page.dateStr);
 						Page.date = DateUtils.Date.fromString(Page.dateStr,'yyyy-MM-dd');
-						Page.postList();
+						Page.postList(false);
 					});
 				});
 				

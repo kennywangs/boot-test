@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.xxb.config.LoadAdditionalProperties;
@@ -16,11 +17,13 @@ import com.xxb.config.LoadAdditionalProperties;
 @ComponentScan(basePackages = { "com.xxb" })
 // @EnableAutoConfiguration(exclude = { MultipartAutoConfiguration.class})
 @EnableTransactionManagement
+@EnableScheduling
 public class BootTestApplication {
 
 	@PostConstruct
 	void started() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+//		TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
 	}
 
 	public static void main(String[] args) {
