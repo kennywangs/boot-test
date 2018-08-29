@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>用户管理</title>
+		<title>角色管理</title>
 		<link href="/css/mui-min.css" rel="stylesheet" />
 		<link href="/css/project.css?v=1" rel="stylesheet" />
 		<style type="text/css">
@@ -15,36 +15,35 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">用户管理</h1>
-			<button id="user-add" class="mui-btn mui-btn-primary mui-pull-right">添加</button>
-			<!-- <button id="user-search" class="mui-btn mui-btn-primary mui-pull-right">搜索</button> -->
+			<h1 class="mui-title">角色管理</h1>
+			<a id="role-add" class="mui-btn mui-btn-primary mui-pull-right">添加</a>
+			<!-- <a id="role-search" class="mui-btn mui-btn-primary mui-pull-right">搜索</a> -->
 		</header>
 		<div class="mui-content">
-			<div id="user-page">
+			<div id="role-page">
 				<div class="mui-input-row mui-search">
-					<input id="user-param" type="search" class="mui-input-clear" placeholder="">
+					<input id="role-param" type="search" class="mui-input-clear" placeholder="">
 					<span class="mui-icon mui-icon-clear mui-hidden"></span>
 					<span class="mui-placeholder"><span class="mui-icon mui-icon-search"></span>
-						<span>搜索用户</span>
+						<span>搜索角色</span>
 					</span>
 				</div>
-				<div id="user-list">
-					<div v-for="user in users" class="mui-card" @click="Page.openUser(user.id)">
+				<div id="role-list">
+					<div v-for="role in roles" class="mui-card" @click="Page.openRole(role.id)">
 						<div class="mui-card-header">
-							{{ user.description }} | {{ user.name }}
+							{{ role.name }}
 						</div>
 						<div class="mui-card-content">
 							<div class="mui-card-content-inner">
-								<p>手机号：{{ user.mobile }}</p>
-								<p>类型：{{ user.type }}</p>
-								<p>open id：{{ user.openId }}</p>
+								<p>角色名：{{ role.description }}</p>
+								<p>角色类型：{{ role.roleType }}</p>
 							</div>
 						</div>
 						<!--页脚，放置补充信息或支持的操作-->
 						<div class="mui-card-footer">
-							创建时间：{{ user.createDate }}<br>
-							修改时间：{{ user.modifyDate }}
-							<button class="mui-btn mui-btn-primary" @click.stop="Page.openRole(user.id,$event)">角色</button>
+							创建时间：{{ role.createDate }}<br>
+							修改时间：{{ role.modifyDate }}
+							<button class="mui-btn mui-btn-primary" @click.stop="Page.openAuth(role.id,$event)">权限</button>
 						</div>
 					</div>
 				</div>
@@ -52,34 +51,34 @@
 					<button id="load-more" class="mui-btn mui-btn-primary" style="display: none;">加载更多...</button>
 				</div>
 			</div>
-			<div id="role-page" style="display: none;">
-				<div class="title">用户角色列表</div>
-				<div id="user-role">
-					<ul v-for="role in roles" class="mui-table-view">
+			<div id="auth-page" style="display: none;">
+				<div class="title">角色权限列表</div>
+				<div id="role-auth">
+					<ul v-for="auth in auths" class="mui-table-view">
 					    <li class="mui-table-view-cell mui-media">
-					        <a @click="chooseRole(role)">
-					        	<span v-show="role.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
+					        <a @click="chooseAuth(auth)">
+					        	<span v-show="auth.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
 					            <div class="mui-media-body">
-					               	 {{ role.name }}
-					                <p class='mui-ellipsis'>{{ role.description }}</p>
+					               	 {{ auth.name }}
+					                <p class='mui-ellipsis'>{{ auth.description }}</p>
 					            </div>
 					        </a>
 					    </li>
 					</ul>
 				</div>
 				<div class="pro-row" style="margin:10px auto;background-color: #fff;">
-					<a id="add-role" class="mui-icon mui-icon-arrowup" style="color: #fff;background-color: #008080;"></a>
-					<a id="remove-role" class="mui-icon mui-icon-arrowdown" style="color: #fff;background-color: #008080;"></a>
+					<a id="add-auth" class="mui-icon mui-icon-arrowup" style="color: #fff;background-color: #008080;"></a>
+					<a id="remove-auth" class="mui-icon mui-icon-arrowdown" style="color: #fff;background-color: #008080;"></a>
 				</div>
-				<div class="title">所有角色列表</div>
-				<div id="all-role">
-					<ul v-for="role in roles" class="mui-table-view">
+				<div class="title">所有权限列表</div>
+				<div id="all-auth">
+					<ul v-for="auth in auths" class="mui-table-view">
 					    <li class="mui-table-view-cell mui-media">
-					        <a @click="chooseRole(role)">
-					        	<span v-show="role.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
+					        <a @click="chooseAuth(auth)">
+					        	<span v-show="auth.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
 					            <div class="mui-media-body">
-					               	 {{ role.name }}
-					                <p class='mui-ellipsis'>{{ role.description }}</p>
+					               	 {{ auth.name }}
+					                <p class='mui-ellipsis'>{{ auth.description }}</p>
 					            </div>
 					        </a>
 					    </li>
@@ -87,8 +86,8 @@
 				</div>
 				
 				<div class="pro-row" style="margin-top:10px;background-color: #fff;">
-					<button id="role-confirm" class="mui-btn mui-btn-primary">确认</button>
-					<button id="back-user" class="mui-btn mui-btn-primary">返回</button>
+					<button id="auth-confirm" class="mui-btn mui-btn-primary">确认</button>
+					<button id="back-role" class="mui-btn mui-btn-primary">返回</button>
 				</div>
 			</div>
 		</div>
@@ -98,47 +97,47 @@
 		<script src="/js/vue.min.js"></script>
 		<script>
 			(function(Page) {
-				Page.userVm = new Vue({
-					el: '#user-list',
-					data: {
-						users: []
-					}
-				});
-				
 				Page.roleVm = new Vue({
-					el: '#user-role',
-					data:{
-						roles: []
-					},
-					methods:{
-						chooseRole : function(role){
-							role.selected = !role.selected;
-						}
-					}
-				});
-				
-				Page.allRoleVm = new Vue({
-					el: '#all-role',
+					el: '#role-list',
 					data: {
 						roles: []
+					}
+				});
+				
+				Page.authVm = new Vue({
+					el: '#role-auth',
+					data:{
+						auths: []
 					},
 					methods:{
-						chooseRole : function(role){
-							role.selected = !role.selected;
+						chooseAuth : function(auth){
+							auth.selected = !auth.selected;
 						}
 					}
 				});
 				
-				Page.openUser = function(id){
-					window.location.href = app.getServerUrl('/manage/user/view?id='+id);
+				Page.allAuthVm = new Vue({
+					el: '#all-auth',
+					data: {
+						auths: []
+					},
+					methods:{
+						chooseAuth : function(auth){
+							auth.selected = !auth.selected;
+						}
+					}
+				});
+				
+				Page.openRole = function(id){
+					window.location.href = app.getServerUrl('/manage/role/view?id='+id);
 				}
-				Page.openRole = function(id,ev){
+				Page.openAuth = function(id,ev){
 					ev.preventDefault();
 					//console.log(ev.target);
-					$('#user-page').toggle();
 					$('#role-page').toggle();
-					Page.getUserRoles(id);
-					Page.getAllRoles();
+					$('#auth-page').toggle();
+					Page.getRoleAuths(id);
+					Page.getAllAuths();
 				}
 				Page.searchParam = {};
 				Page.setDefaultPagePram = function(){
@@ -146,7 +145,7 @@
 					this.limit=10;
 				};
 				Page.postSearch = function(more){
-					var param=$('#user-param').val();
+					var param=$('#role-param').val();
 					if (param){
 						Page.searchParam = {namesearch:param};
 					}else{
@@ -156,20 +155,20 @@
 						Page.no++;
 					}
 					$.ajax({
-						url:app.getServerUrl('/user/search.do?size='+Page.limit+'&page='+Page.no),
+						url:app.getServerUrl('/auth/role/list.do?size='+Page.limit+'&page='+Page.no),
 						type:'POST',
 						contentType:'application/json;charset=UTF-8',
 						dataType:'json',
 						data: JSON.stringify(Page.searchParam),
 						success: function (data) {
 							if (more){
-								$.each(data.data,function(i,item){
-									Page.userVm.users.push(item);
+								$.each(data.data.content,function(i,item){
+									Page.roleVm.roles.push(item);
 								});
 							}else{
-								Page.userVm.users = data.data;
+								Page.roleVm.roles = data.data.content;
 							}
-							if ((Page.no+1)<data.totalPage){
+							if ((Page.no+1)<data.totalPages){
 								$('#load-more').show();
 							}else{
 								$('#load-more').hide();
@@ -179,27 +178,27 @@
 						error: function(data){ mui.toast(data.msg); }
 					});
 				};
-				Page.getUserRoles = function(userId){
+				Page.getRoleAuths = function(roleId){
 					$.ajax({
-						url:app.getServerUrl('/auth/role/listbyuser.do?userId='+userId),
+						url:app.getServerUrl('/auth/auth/listbyrole.do?roleId='+roleId),
 						type:'POST',
 						contentType:'application/json;charset=UTF-8',
 						dataType:'json',
 						//data: JSON.stringify(Page.searchParam),
 						success: function (data) {
-							Page.currentUserId = userId;
+							Page.currentRoleId = roleId;
 							$.each(data.data,function(i,item){
 								item.selected=false;
 							});
-							Page.roleVm.roles = data.data;
+							Page.authVm.auths = data.data;
 							mui.toast(data.msg);
 						},
 						error: function(data){ mui.toast(data.msg); }
 					});
 				};
-				Page.getAllRoles = function(){
+				Page.getAllAuths = function(){
 					$.ajax({
-						url:app.getServerUrl('/auth/role/list.do?page=0&size=20'),
+						url:app.getServerUrl('/auth/auth/list.do?page=0&size=30'),
 						type:'POST',
 						contentType:'application/json;charset=UTF-8',
 						dataType:'json',
@@ -208,7 +207,7 @@
 							$.each(data.data.content,function(i,item){
 								item.selected=false;
 							});
-							Page.allRoleVm.roles = data.data.content;
+							Page.allAuthVm.auths = data.data.content;
 							mui.toast(data.msg);
 						},
 						error: function(data){ mui.toast(data.msg); }
@@ -219,17 +218,17 @@
 				Page.setDefaultPagePram();
 				Page.postSearch();
 				
-				$('#user-search').click(function(){
+				$('#role-search').click(function(){
 					Page.setDefaultPagePram();
 					Page.postSearch();
 				});
-				$('#user-add').click(function(){
-					window.location.href = app.getServerUrl('/manage/user/view');
+				$('#role-add').click(function(){
+					window.location.href = app.getServerUrl('/manage/role/view');
 				});
 				$('#load-more').click(function(){
 					Page.postSearch(true);
 				});
-				$('#user-param').keypress(function(e){
+				$('#role-param').keypress(function(e){
 					if(event.keyCode == "13") {
 						document.activeElement.blur();
 						Page.setDefaultPagePram();
@@ -237,45 +236,45 @@
 						event.preventDefault();
 					}
 				});
-				$('#back-user').click(function(){
-					$('#user-page').toggle();
+				$('#back-role').click(function(){
 					$('#role-page').toggle();
-					Page.currentUserId = null;
+					$('#auth-page').toggle();
+					Page.currentRoleId = null;
 				});
-				$('#add-role').click(function(){
+				$('#add-auth').click(function(){
 					var addlist=[];
-					$.each(Page.allRoleVm.roles,function(i,item){
+					$.each(Page.allAuthVm.auths,function(i,item){
 						if (item.selected){
 							item.selected = false;
 							addlist.push(item);
 						}
 					});
 					$.each(addlist,function(i,item){
-						var exist = app.containInList(Page.roleVm.roles,'id',item.id);
+						var exist = app.containInList(Page.authVm.auths,'id',item.id);
 						if (!exist){
 							var newItem = $.extend({}, item);
-							Page.roleVm.roles.push(newItem);
+							Page.authVm.auths.push(newItem);
 						}
 					});
 				});
-				$('#remove-role').click(function(){
-					var roleList=[];
-					$.each(Page.roleVm.roles,function(i,item){
+				$('#remove-auth').click(function(){
+					var authList=[];
+					$.each(Page.authVm.auths,function(i,item){
 						if (!item.selected){
-							roleList.push(item);
+							authList.push(item);
 						}
 					});
-					Page.roleVm.roles=roleList;
+					Page.authVm.auths=authList;
 				});
-				$('#role-confirm').click(function(){
-					if (Page.currentUserId){
-						var data = {id:Page.currentUserId,roles:[]};
-						$.each(Page.roleVm.roles,function(i,item){
-							var role = {id:item.id};
-							data.roles.push(role);
+				$('#auth-confirm').click(function(){
+					if (Page.currentRoleId){
+						var data = {id:Page.currentRoleId,auths:[]};
+						$.each(Page.authVm.auths,function(i,item){
+							var auth = {id:item.id};
+							data.auths.push(auth);
 						});
 						$.ajax({
-							url:app.getServerUrl('/user/save.do'),
+							url:app.getServerUrl('/auth/role/save.do'),
 							type:'POST',
 							contentType:'application/json;charset=UTF-8',
 							dataType:'json',
@@ -286,7 +285,7 @@
 							error: function(data){ mui.toast(data.msg); }
 						});
 					}else{
-						mui.toast('当前用户不存在!');
+						mui.toast('当前角色不存在!');
 					}
 				});
 				

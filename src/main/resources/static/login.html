@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title>用户登陆</title>
 		<link href="/css/mui-min.css" rel="stylesheet" />
-		<link href="/css/project.css" rel="stylesheet" />
+		<link href="/css/project.css?v=1" rel="stylesheet" />
 		<style type="text/css">
 			.mui-input-group{
 				margin-top: 10px;
@@ -53,7 +53,18 @@
 		<script>
 			(function(doc) {
 				
-				$("#login").click(function() {
+				$("#password").keypress(function(e){
+					login();
+				});
+				$("#login").click(function(){
+					login();
+				});
+				
+				$("#reg").click(function() {
+					window.location.href = "/reg.html";
+				});
+				
+				var login = function() {
 					var name = $("#account").val();
 					var password = $("#password").val();
 					var data = {'name':name,'password':password};
@@ -71,11 +82,7 @@
 						},
 						error: function(data){ console.log(data); }
 					});
-				});
-				
-				$("#reg").click(function() {
-					window.location.href = "/reg.html";
-				});
+				};
 				
 			}(document));
 		</script>

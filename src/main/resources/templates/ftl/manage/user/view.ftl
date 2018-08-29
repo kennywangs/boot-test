@@ -56,21 +56,23 @@
 				Page.params = app.parseParams(window.location.href);
 				Page.userId=Page.params.id;
 				
-				$.ajax({
-					url:app.getServerUrl('/user/view.do?id='+Page.userId),
-					type:'GET',
-					dataType:'json',
-					success: function (data) {
-						Page.user = data.data;
-						$("#account").val(Page.user.name);
-						$("#mobile").val(Page.user.mobile);
-						$("#description").val(Page.user.description);
-						$("#type").val(Page.user.type);
-						$("#open-id").val(Page.user.openId);
-						mui.toast(data.msg);
-					},
-					error: function(data){ mui.toast(data.msg); }
-				});
+				if (Page.userId){
+					$.ajax({
+						url:app.getServerUrl('/user/view.do?id='+Page.userId),
+						type:'GET',
+						dataType:'json',
+						success: function (data) {
+							Page.user = data.data;
+							$("#account").val(Page.user.name);
+							$("#mobile").val(Page.user.mobile);
+							$("#description").val(Page.user.description);
+							$("#type").val(Page.user.type);
+							$("#open-id").val(Page.user.openId);
+							mui.toast(data.msg);
+						},
+						error: function(data){ mui.toast(data.msg); }
+					});
+				}
 				
 				$("#reg").click(function() {
 					var name = $("#account").val();
@@ -84,7 +86,7 @@
 						mui.toast("请把信息填写完整");
 						return;
 					}
-					var data = {'id':Page.userId,'name':name,'mobile':mobile,'description':description,'type':type,'openId':openId};
+					var data = {'id':Page.userId,'name':name,'mobile':mobile,'description':description,'type':type,'openId':openId?openId:null};
 					if (password){
 						data.password = password;
 					}
@@ -99,10 +101,6 @@
 						},
 						error: function(data){ mui.toast(data.msg); }
 					});
-				});
-				
-				$("#login").click(function() {
-					window.location.href = "/login.html";
 				});
 				
 			}(Page={}));

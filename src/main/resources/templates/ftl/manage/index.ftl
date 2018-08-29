@@ -37,27 +37,39 @@
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
-						<span class="mui-icon mui-icon-navigate"></span>
-						<div class="mui-media-body">权限管理</div>
-					</a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a href="/manage/role/list">
 						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">角色管理</div>
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a href="/manage/auth/list">
+						<span class="mui-icon mui-icon-navigate"></span>
+						<div class="mui-media-body">权限管理</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="/manage/appoint/list">
 						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">预约管理</div>
 					</a>
 				</li>
 			</ul>
+			<div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a id="refresh-auth" class="mui-text-center">刷新权限缓存</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a id="" class="mui-text-center">更多功能</a>
+					</li>
+				</ul>
+				<div id='map'></div>
+			</div>
 		</div>
 		<script src="/js/mui-min.js"></script>
 		<script src="/js/jquery-3.3.1.min.js"></script>
+		<script src="/js/project/app.js?v=1"></script>
 		<script>
 			(function(doc) {
 				
@@ -93,6 +105,22 @@
 				
 				$("#login").click(function() {
 					window.location.href = "/login.html";
+				});
+				$("#refresh-auth").click(function() {
+					mui.confirm('','确定刷新权限缓存？',['是','否'],function(e){
+						if (e.index == 1) {
+							return;
+						}
+						$.ajax({
+							url:app.getServerUrl('/auth/auth/refreshcache.do'),
+							type:'POST',
+							dataType:'json',
+							success: function (data) {
+								mui.toast(data.msg);
+							},
+							error: function(data){ mui.toast(data.msg); }
+						});
+					});
 				});
 				
 			}(document));

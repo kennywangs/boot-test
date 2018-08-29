@@ -79,6 +79,16 @@ public class AuthService extends BaseService<Authority> {
 	}
 	
 	@Transactional(readOnly = true)
+	public Role getRoleById(String id) {
+		return roleRepo.findById(id).get();
+	}
+	
+	@Transactional(readOnly = true)
+	public Authority getAuthById(String id) {
+		return authRepo.findById(id).get();
+	}
+	
+	@Transactional(readOnly = true)
 	public Set<Role> getRolesByUser(String userId){
 		return userRepo.findById(userId).get().getRoles();
 	}
@@ -149,11 +159,17 @@ public class AuthService extends BaseService<Authority> {
 			@Override
             public Predicate toPredicate(Root<Authority> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> predicate = new ArrayList<>();
+				if (searchParam.containsKey("namesearch")) {
+					Predicate p1 = cb.like(root.get("name").as(String.class), "%"+searchParam.getString("namesearch")+"%");
+                	Predicate p2 = cb.like(root.get("description").as(String.class), "%"+searchParam.getString("namesearch")+"%");
+                	
+                    predicate.add(cb.or(p1,p2));
+				}
 				if (searchParam.containsKey("name")) {
-                    predicate.add(cb.like(root.get("name").as(String.class), searchParam.getString("name")));
+                    predicate.add(cb.like(root.get("name").as(String.class), "%"+searchParam.getString("name")+"%"));
                 }
 				if (searchParam.containsKey("authUrl")) {
-                    predicate.add(cb.like(root.get("authUrl").as(String.class), searchParam.getString("authUrl")));
+                    predicate.add(cb.like(root.get("authUrl").as(String.class), "%"+searchParam.getString("authUrl")+"%"));
                 }
 				Predicate[] pre = new Predicate[predicate.size()];
 				return query.where(predicate.toArray(pre)).getRestriction();
@@ -167,11 +183,17 @@ public class AuthService extends BaseService<Authority> {
 			@Override
             public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> predicate = new ArrayList<>();
+				if (searchParam.containsKey("namesearch")) {
+					Predicate p1 = cb.like(root.get("name").as(String.class), "%"+searchParam.getString("namesearch")+"%");
+                	Predicate p2 = cb.like(root.get("description").as(String.class), "%"+searchParam.getString("namesearch")+"%");
+                	
+                    predicate.add(cb.or(p1,p2));
+				}
 				if (searchParam.containsKey("name")) {
-                    predicate.add(cb.like(root.get("name").as(String.class), searchParam.getString("name")));
+                    predicate.add(cb.like(root.get("name").as(String.class), "%"+searchParam.getString("name")+"%"));
                 }
 				if (searchParam.containsKey("description")) {
-                    predicate.add(cb.like(root.get("description").as(String.class), searchParam.getString("description")));
+                    predicate.add(cb.like(root.get("description").as(String.class), "%"+searchParam.getString("description")+"%"));
                 }
 				Predicate[] pre = new Predicate[predicate.size()];
 				return query.where(predicate.toArray(pre)).getRestriction();

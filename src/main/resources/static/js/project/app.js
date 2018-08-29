@@ -1,6 +1,6 @@
 (function(owner) {
-	owner.serverBase='http://localhost:8080';
-//	owner.serverBase='http://192.168.2.188:8080';
+//	owner.serverBase='http://localhost:8080';
+	owner.serverBase='http://192.168.1.107:8080';
 	owner.getServerUrl = function(url){
 		return owner.serverBase+url;
 	};
@@ -23,5 +23,8 @@
 			}
 		});
 		return ret;
-	}
+	};
+	owner.toInt = function(number) {
+	    return Infinity === number ? 0 : (number*1 || 0).toFixed(0)*1;
+	};
 }(window.app = {}));
