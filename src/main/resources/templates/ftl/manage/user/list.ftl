@@ -15,9 +15,9 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a href="/manage/index" class="mui-icon mui-icon-home" style="color: #999;"></a>
 			<h1 class="mui-title">用户管理</h1>
-			<button id="user-add" class="mui-btn mui-btn-primary mui-pull-right">添加</button>
-			<!-- <button id="user-search" class="mui-btn mui-btn-primary mui-pull-right">搜索</button> -->
+			<a id="user-add" class="mui-icon mui-icon-plus mui-pull-right"></a>
 		</header>
 		<div class="mui-content">
 			<div id="user-page">
@@ -60,8 +60,8 @@
 					        <a @click="chooseRole(role)">
 					        	<span v-show="role.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
 					            <div class="mui-media-body">
-					               	 {{ role.name }}
-					                <p class='mui-ellipsis'>{{ role.description }}</p>
+					               	 {{ role.description }}
+					                <p class='mui-ellipsis'>{{ role.name }}</p>
 					            </div>
 					        </a>
 					    </li>
@@ -78,8 +78,8 @@
 					        <a @click="chooseRole(role)">
 					        	<span v-show="role.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
 					            <div class="mui-media-body">
-					               	 {{ role.name }}
-					                <p class='mui-ellipsis'>{{ role.description }}</p>
+					               	 {{ role.description }}
+					                <p class='mui-ellipsis'>{{ role.name }}</p>
 					            </div>
 					        </a>
 					    </li>
@@ -205,10 +205,10 @@
 						dataType:'json',
 						data: JSON.stringify({}),
 						success: function (data) {
-							$.each(data.data.content,function(i,item){
+							$.each(data.data,function(i,item){
 								item.selected=false;
 							});
-							Page.allRoleVm.roles = data.data.content;
+							Page.allRoleVm.roles = data.data;
 							mui.toast(data.msg);
 						},
 						error: function(data){ mui.toast(data.msg); }

@@ -54,7 +54,9 @@
 			(function(doc) {
 				
 				$("#password").keypress(function(e){
-					login();
+					if(event.keyCode == "13") {
+						login();
+					}
 				});
 				$("#login").click(function(){
 					login();

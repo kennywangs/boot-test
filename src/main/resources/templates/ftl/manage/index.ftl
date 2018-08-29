@@ -31,7 +31,7 @@
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a href="/manage/group/list">
 						<span class="mui-icon mui-icon-flag"></span>
 						<div class="mui-media-body">机构管理</div>
 					</a>
@@ -43,15 +43,12 @@
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-<<<<<<< HEAD
 					<a href="/manage/auth/list">
 						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">权限管理</div>
 					</a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-=======
->>>>>>> branch 'master' of https://github.com/kennywangs/boot-test.git
 					<a href="/manage/appoint/list">
 						<span class="mui-icon mui-icon-navigate"></span>
 						<div class="mui-media-body">预约管理</div>

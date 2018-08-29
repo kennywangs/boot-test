@@ -15,9 +15,9 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a href="/manage/index" class="mui-icon mui-icon-home" style="color: #999;"></a>
 			<h1 class="mui-title">角色管理</h1>
-			<a id="role-add" class="mui-btn mui-btn-primary mui-pull-right">添加</a>
-			<!-- <a id="role-search" class="mui-btn mui-btn-primary mui-pull-right">搜索</a> -->
+			<a id="role-add" class="mui-icon mui-icon-plus mui-pull-right"></a>
 		</header>
 		<div class="mui-content">
 			<div id="role-page">
@@ -31,11 +31,11 @@
 				<div id="role-list">
 					<div v-for="role in roles" class="mui-card" @click="Page.openRole(role.id)">
 						<div class="mui-card-header">
-							{{ role.name }}
+							{{ role.description }}
 						</div>
 						<div class="mui-card-content">
 							<div class="mui-card-content-inner">
-								<p>角色名：{{ role.description }}</p>
+								<p>角色名称：{{ role.name }}</p>
 								<p>角色类型：{{ role.roleType }}</p>
 							</div>
 						</div>
@@ -59,8 +59,8 @@
 					        <a @click="chooseAuth(auth)">
 					        	<span v-show="auth.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
 					            <div class="mui-media-body">
-					               	 {{ auth.name }}
-					                <p class='mui-ellipsis'>{{ auth.description }}</p>
+					               	 {{ auth.description }}
+					                <p class='mui-ellipsis'>{{ auth.name }}</p>
 					            </div>
 					        </a>
 					    </li>
@@ -77,8 +77,8 @@
 					        <a @click="chooseAuth(auth)">
 					        	<span v-show="auth.selected" class="mui-pull-right mui-icon mui-icon-checkmarkempty"></span>
 					            <div class="mui-media-body">
-					               	 {{ auth.name }}
-					                <p class='mui-ellipsis'>{{ auth.description }}</p>
+					               	 {{ auth.description }}
+					                <p class='mui-ellipsis'>{{ auth.name }}</p>
 					            </div>
 					        </a>
 					    </li>
@@ -162,11 +162,11 @@
 						data: JSON.stringify(Page.searchParam),
 						success: function (data) {
 							if (more){
-								$.each(data.data.content,function(i,item){
+								$.each(data.data,function(i,item){
 									Page.roleVm.roles.push(item);
 								});
 							}else{
-								Page.roleVm.roles = data.data.content;
+								Page.roleVm.roles = data.data;
 							}
 							if ((Page.no+1)<data.totalPages){
 								$('#load-more').show();
@@ -204,10 +204,10 @@
 						dataType:'json',
 						data: JSON.stringify({}),
 						success: function (data) {
-							$.each(data.data.content,function(i,item){
+							$.each(data.data,function(i,item){
 								item.selected=false;
 							});
-							Page.allAuthVm.auths = data.data.content;
+							Page.allAuthVm.auths = data.data;
 							mui.toast(data.msg);
 						},
 						error: function(data){ mui.toast(data.msg); }

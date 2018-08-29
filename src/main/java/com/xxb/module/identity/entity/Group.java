@@ -30,6 +30,10 @@ public class Group implements Serializable {
 	@org.hibernate.annotations.Type(type="org.hibernate.type.StringType")
 	private String name;
 	
+	@Column(name = "description")
+	@org.hibernate.annotations.Type(type="org.hibernate.type.StringType")
+	private String description;
+	
 	@Column(name = "group_no")
 	@org.hibernate.annotations.Type(type = "org.hibernate.type.StringType")
 	private String no;
@@ -60,6 +64,14 @@ public class Group implements Serializable {
 		this.name = name;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getNo() {
 		return no;
 	}
