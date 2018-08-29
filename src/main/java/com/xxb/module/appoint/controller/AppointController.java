@@ -19,19 +19,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xxb.base.BaseController;
 import com.xxb.base.ProjectException;
 import com.xxb.module.appoint.entity.Appoint;
 import com.xxb.module.appoint.service.AppointService;
 import com.xxb.module.identity.entity.User;
-import com.xxb.util.jackson.Djson;
+import com.xxb.module.identity.service.UserService;
+import com.xxb.util.fastjson.JsonFilter;
 
 @RestController
-@RequestMapping("/appoint/customer")
+@RequestMapping("/customer/appoint")
 public class AppointController extends BaseController {
 	
 	@Autowired
 	private AppointService appointService;
+	
+	@Autowired
+	private UserService userService;
 	
 	/**
 	 * 发起预约
@@ -39,7 +44,7 @@ public class AppointController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@PostMapping(value="/start.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value="/start",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String startAppoint(@RequestBody Appoint appoint, HttpServletRequest request) {
 		try {
 			User user = getCurrentUser(request);
@@ -63,15 +68,15 @@ public class AppointController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@GetMapping(value="/mylist.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public String listCustomerAppoints(@RequestParam int page, @RequestParam int size, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date date, HttpServletRequest request) {
+	@GetMapping(value="/mylist",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String listCustomerAppoints(@RequestParam int page, @RequestParam int size, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date, HttpServletRequest request) {
 		try {
 			User user = getCurrentUser(request);
 			Pageable pageable = PageRequest.of(page, size, new Sort(Direction.DESC, "startDate"));
 			Page<Appoint> resultPage = appointService.listAppointByDate(user.getId(),null,date,pageable);
-			Djson ajson = new Djson(Appoint.class,null,"customer");
-			Djson ujson = new Djson(User.class,null,"password,roles,group");
-			return handleJsonPageResult("获取成功",resultPage,ajson,ujson);
+			JsonFilter aFilter = new JsonFilter(Appoint.class,null,"customer,operator");
+			JsonFilter uFilter = new JsonFilter(User.class,null,"password,roles,group,createDate,modifyDate");
+			return handleFastJsonPage("获取成功", resultPage, aFilter, uFilter);
 		} catch (Exception e) {
 			return handleError("获取失败.",e);
 		}
@@ -83,7 +88,7 @@ public class AppointController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@PostMapping(value="/cancel.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value="/cancel",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String cancelAppoint(@RequestParam String id, HttpServletRequest request) {
 		try {
 			User user = getCurrentUser(request);
@@ -93,5 +98,19 @@ public class AppointController extends BaseController {
 			return handleError("取消预约失败.",e);
 		}
 	}
-
+	
+	@PostMapping(value="/list-attendant",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String listAttendant(HttpServletRequest request) {
+		try {
+			getCurrentUser(request);
+			JSONObject searchParam = new JSONObject();
+			searchParam.put("roleName", "attendant");
+			Page<User> resultPage = userService.searchUser(searchParam, PageRequest.of(0, 1000));
+			JsonFilter uFilter = new JsonFilter(User.class,null,"password,roles,group,createDate,modifyDate");
+			return handleFastJsonPage("获取技师列表成功",resultPage,uFilter);
+		} catch (Exception e) {
+			return handleError("获取技师列表失败",e);
+		}
+	}
+	
 }

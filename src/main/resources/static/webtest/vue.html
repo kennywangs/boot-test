@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>测试vue</title>
+<link href="/css/mui-min.css" rel="stylesheet" />
+<link href="/css/mui.picker.min.css?v=1" rel="stylesheet" />
+<link href="/css/project.css?v=1" rel="stylesheet" />
+<style type="text/css">
+.mui-input-group {
+	margin-top: 10px;
+}
+</style>
+</head>
+<body>
+	<div id="app">
+		<button-counter ref="comp"></button-counter>
+		<comp1 ref="comp1"></comp1>
+	</div>
+	<div id="comp-test"></div>
+	<script type="x-template" id="demo4">
+		<div>
+			<button v-on:click="count++">You clicked me {{ count }} times.</button>
+			<ul v-for="item in items">
+				<li>{{ item.text }}</li>
+			</ul>
+		</div>
+	</script>
+	<script src="/js/vue.min.js"></script>
+	<script src="/webtest/comp1.js"></script>
+	<script>
+		Vue.component('button-counter', {
+		  data: function () {
+		    return {
+		      count: 0,
+		      items:[{"text":"2"}]
+		    }
+		  },
+		  methods: {
+			  changeVal: function(items){
+				  this.items = items;
+			  },
+			  pushVal: function(item){
+				  this.items.push(item);
+			  },
+		  },
+		  template:'#demo4'
+		});
+		//vm.$set('items',JSON.parse('[{"text":"2"}]'));
+		var vm = new Vue({ el: '#app' });
+		console.log(vm);
+		vm.$refs.comp.changeVal([{"text":"2"},{"text":"3"}]);
+		vm.$children[0].pushVal({"text":"4"});
+		
+	</script>
+</body>
+</html>

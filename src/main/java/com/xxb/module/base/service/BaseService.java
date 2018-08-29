@@ -20,7 +20,7 @@ import com.xxb.util.web.MyPage;
 
 public abstract class BaseService<T> {
 	
-	private final Logger logger = LoggerFactory.getLogger(BaseService.class);
+	protected final Logger logger = LoggerFactory.getLogger(BaseService.class);
 	
 	@PersistenceContext
 	private EntityManager em;

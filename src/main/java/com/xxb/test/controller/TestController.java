@@ -50,7 +50,6 @@ public class TestController extends BaseController {
 	@RequestMapping(value = "/testresp",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> testResp(){
 		logger.info("log info test");
-		String[] list = env.getProperty("project.list", String[].class);
 		logger.info(env.getProperty("project.list[0]"));
 		logger.error(env.getProperty("project.name"));
 		return new ResponseEntity<String>("manage/index", HttpStatus.OK);

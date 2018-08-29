@@ -1,15 +1,15 @@
 spring:
-  profiles: desk
-  # postgresql
+  profiles: cloud
+  # datasource
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
+    url: jdbc:mysql://mysql:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
     password: 123456
-    driverClassName: org.postgresql.Driver
+    driverClassName: com.mysql.jdbc.Driver
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQL5Dialect
         hbm2ddl:
           auto: update
         temp:
@@ -48,8 +48,8 @@ spring:
   # redis
   redis:
     database: 0
-    host: localhost
-    password: 
+    host: redis
+    password: tencentcloud
     port: 6379
     jedis:
       timeout: 10000

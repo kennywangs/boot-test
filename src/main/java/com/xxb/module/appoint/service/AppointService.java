@@ -13,11 +13,11 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -32,7 +32,7 @@ import com.xxb.module.identity.entity.User;
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class AppointService extends BaseService<Appoint> {
-
+	
 	@Autowired
 	private AppointRepository repo;
 
@@ -41,7 +41,7 @@ public class AppointService extends BaseService<Appoint> {
 		return repo.save(appoint);
 	}
 	
-	public void comfirmAppoint(String appointId, User user) {
+	public void confirmAppoint(String appointId, User user) {
 		Appoint appoint = repo.findById(appointId).get();
 		if (appoint==null) {
 			throw new ProjectException("没有这个预约");
@@ -59,6 +59,14 @@ public class AppointService extends BaseService<Appoint> {
 		appoint.setOperator(user.getId());
 		appoint.setStatus(Appoint.STATUS_CANCEL);
 		repo.save(appoint);
+	}
+	
+	public void deleteAppoint(String appointId) {
+		Appoint appoint = repo.findById(appointId).get();
+		if (appoint==null) {
+			throw new ProjectException("没有这个预约");
+		}
+		repo.delete(appoint);
 	}
 	
 	@Transactional(readOnly = true)
@@ -125,13 +133,27 @@ public class AppointService extends BaseService<Appoint> {
 					predicate.add(cb.equal(attendantJoin.get("id").as(String.class), attendant));
 					
 				}
-
-				predicate.add(cb.greaterThanOrEqualTo(root.get("startDate").as(Date.class), startDate));
-				predicate.add(cb.lessThan(root.get("startDate").as(Date.class), endDate));
+				if (startDate != null) {
+					predicate.add(cb.greaterThanOrEqualTo(root.get("startDate").as(Date.class), startDate));
+				}
+				if (endDate != null) {
+					predicate.add(cb.lessThan(root.get("startDate").as(Date.class), endDate));
+				}
 				Predicate[] pre = new Predicate[predicate.size()];
 				return query.where(predicate.toArray(pre)).getRestriction();
 			}
 		};
+	}
+	
+	@Scheduled(cron="5 0 0 * * ?")
+	public void cleanTask() {
+		DateTime dt = new DateTime();
+		Date endDate = dt.minusDays(1).withTimeAtStartOfDay().toDate();
+		logger.info("delete expired appoints end with:{}",endDate);
+		Specification<Appoint> specification = dateWhereClause(null, null, null, endDate);
+		List<Appoint> delAppoints = repo.findAll(specification);
+		delAppoints.forEach(item->logger.info(item.getStartDate().toString()));
+		repo.deleteInBatch(delAppoints);
 	}
 
 }
