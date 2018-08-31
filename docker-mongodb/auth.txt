@@ -1,0 +1,2 @@
+db.createUser({user:"ken",pwd:"baiduyun",roles:[{role:"readWrite",db:"admin"}],mechanisms:["SCRAM-SHA-1"]})
+db.createUser({user:"appboot",pwd:"baiduyun",roles:[{role:"readWrite",db:"appboot"}],mechanisms:["SCRAM-SHA-1"]})
