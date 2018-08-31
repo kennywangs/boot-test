@@ -23,7 +23,7 @@ spring:
   # mongo
   data:
     mongodb:
-      uri: mongodb://root:rootken@mongodb:27017/appboot
+      uri: mongodb://appboot:baiduyun@localhost:27017/appboot
       connections-per-host: 20
       min-connections-per-host: 20
       option:

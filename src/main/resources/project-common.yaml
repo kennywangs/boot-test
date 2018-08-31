@@ -1,5 +1,7 @@
 project:
   name: boot-test
+  upload:
+    path: E:\temp\osstest
   list: 
     - a
     - b

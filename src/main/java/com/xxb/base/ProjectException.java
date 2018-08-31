@@ -8,6 +8,8 @@ public class ProjectException extends RuntimeException {
 	
 	public final static String NeedLogin = "needLogin";
 	
+	public final static String IOEXCEPTION = "ioexp";
+	
 	private String errorCode;
 
 	public ProjectException(String msg) {
