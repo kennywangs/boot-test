@@ -51,8 +51,8 @@ config:
   redis:
     enable: true
   upload:
-    path: /data/oss-res
-    ossPath: /data/resource
+    path: /data/resource
+    ossPath: /data/oss-res
   mongodb:
     host: 172.16.0.4
     port: 27017

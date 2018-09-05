@@ -84,9 +84,10 @@ public class OssFileService {
 		OssBucket bucket = bucketRepo.findById(new ObjectId(bucektId)).get();
 		String realFileName = UUID.randomUUID().toString();
 		String oriFileName = file.getOriginalFilename();
+		String uploadPath = env.getProperty("config.upload.ossPath");
+		File realFile = new File(uploadPath, bucket.getRealName()+"/"+realFileName);
 		try {
-			FileUtils.copyInputStreamToFile(file.getInputStream(),
-					new File(bucket.getFilePath(),realFileName));
+			FileUtils.copyInputStreamToFile(file.getInputStream(), realFile);
 		} catch (Exception e) {
 			throw new ProjectException("copy upload file failed.");
 		}
