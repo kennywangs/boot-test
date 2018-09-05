@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.UUID;
 
@@ -157,11 +158,11 @@ public class OssFileService {
 //		if (mimeType == null) {
 //			mimeType = "appliction/octet-stream";
 //		}
-		response.setContentType("appliction/octet-stream");
-		response.setHeader("Content-Disposition", "inline; filename=\""+downloadName+"\"");
-		response.setContentLength((int) file.length());
 		InputStream inputStream = null;
 		try {
+			response.setContentType("appliction/octet-stream");
+			response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''"+URLEncoder.encode(downloadName, "UTF-8"));
+			response.setContentLength((int) file.length());
 			inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 		} catch (Exception e) {
