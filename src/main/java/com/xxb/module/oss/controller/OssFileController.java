@@ -1,5 +1,8 @@
 package com.xxb.module.oss.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
@@ -52,14 +57,16 @@ public class OssFileController extends BaseController {
 		return new ResponseEntity<String>(handleResult("成功", bucket), HttpStatus.OK);
 	}
 	
-	@GetMapping(value="/bucket/search.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value="/bucket/search.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> listBucket(@RequestBody JSONObject params, @PageableDefault(value=10, sort={"name"}, direction=Sort.Direction.ASC) Pageable pageable){
 		Page<OssBucket> page = ossService.getBuckets(params, pageable);
 		return new ResponseEntity<String>(handlePageResult("成功", page), HttpStatus.OK);
 	}
 	
-	@PostMapping(value="/file.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<String> createFile(@RequestParam("file") CommonsMultipartFile file, @RequestParam("params") String params){
+	@PostMapping(value="/file.do")
+	public ResponseEntity<String> createFile(HttpServletRequest request){
+		MultipartFile file = ((MultipartHttpServletRequest) request).getFile("file");
+		String params = ((MultipartHttpServletRequest) request).getParameter("params");
 		OssFile ossFile = JsonUtils.parseJson(params, OssFile.class);
 		ossService.createOssFile(ossFile, file);
 		return new ResponseEntity<String>(handleResult("成功"), HttpStatus.OK);
@@ -83,7 +90,7 @@ public class OssFileController extends BaseController {
 		return new ResponseEntity<String>(handleResult("成功"), HttpStatus.OK);
 	}
 	
-	@GetMapping(value="/file/search.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value="/file/search.do",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> listFile(@RequestBody JSONObject params, @PageableDefault(value=10, sort={"name"}, direction=Sort.Direction.ASC) Pageable pageable){
 		Page<OssFile> page = ossService.getFiles(params, pageable);
 		return new ResponseEntity<String>(handlePageResult("成功", page), HttpStatus.OK);

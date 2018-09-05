@@ -1,6 +1,5 @@
 spring:
   profiles: pod1
-  # postgresql
   datasource:
     url: jdbc:mysql://127.0.0.1:3316/boot-test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
@@ -16,24 +15,10 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
     show-sql: true
-  # date
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     default-property-inclusion: NON_NULL
-  # mongo
-  data:
-    mongodb:
-      uri: mongodb://appboot:baiduyun@106.12.103.25:27017/appboot
-      connections-per-host: 20
-      min-connections-per-host: 20
-      option:
-        threads-allowed-to-block-for-connection-multiplier: 10
-        socket-timeout: 0
-        heartbeat-socket-timeout: 20000
-        heartbeat-connect-timeout: 20000
-        heartbeat-frequency: 10000
-  # freemarker
   freemarker:
     enabled: true
     request-context-attribute: request
@@ -46,11 +31,10 @@ spring:
       default_encoding: UTF-8
       date_format: yyyy-MM-dd
       datetime_format: yyyy-MM-dd HH:mm:ss
-  # redis
   redis:
     database: 0
     host: localhost
-    password: 
+    password: null
     port: 6379
     jedis:
       timeout: 10000
@@ -59,9 +43,25 @@ spring:
         max-wait: -1
         max-idle: 10
         min-idle: 2
-
 config:
   redis:
     enable: true
   upload:
-    path: D:/temp/dist
+    path: E:/temp/osstest
+    ossPath: E:/temp/osstest
+  mongodb:
+    host: 106.12.103.25
+    port: 27017
+    userName: appboot
+    password: baiduyun
+    dbName: appboot
+    option:
+      connections-per-host: 10
+      min-connections-per-host: 10
+      threads-allowed-to-block-for-connection-multiplier: 10
+      socket-timeout: 20000
+      connect-timeout: 20000
+      heartbeat-socket-timeout: 2000
+      heartbeat-connect-timeout: 2000
+      heartbeat-frequency: 10000
+      max-wait-time: 10000

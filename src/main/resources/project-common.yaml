@@ -1,7 +1,9 @@
 project:
   name: boot-test
   upload:
-    path: E:\temp\osstest
+    path: E:\temp\upload
+  bucket:
+    basePath: E:\temp\osstest
   list: 
     - a
     - b

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Id;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "oss_file")
@@ -19,11 +20,11 @@ public class OssFile implements Serializable {
     private String _id;
 	private String bucketId;
 	private String parantId;
-	private String originalName;
 	private String descName;
+	private String ext;
+	@Indexed(unique = true)
 	private String filePath;
 	private int type;
-	private String ext;
 	
 	public String get_id() {
 		return _id;
@@ -42,12 +43,6 @@ public class OssFile implements Serializable {
 	}
 	public void setParantId(String parantId) {
 		this.parantId = parantId;
-	}
-	public String getOriginalName() {
-		return originalName;
-	}
-	public void setOriginalName(String originalName) {
-		this.originalName = originalName;
 	}
 	public String getDescName() {
 		return descName;

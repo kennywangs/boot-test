@@ -15,3 +15,5 @@ header{
     color: #6d6d72;
     font-size: 15px;
 }
+.progressNumber{width:100%;height:22px;line-height:22px;border:1px solid #369;margin:3px auto;}
+.progressContent{width:1px;height:22px;line-height:22px;background:#D2D41A;margin:0;}

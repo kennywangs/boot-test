@@ -20,18 +20,6 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     default-property-inclusion: NON_NULL
-  # mongo
-  data:
-    mongodb:
-      uri: mongodb://appboot:baiduyun@localhost:27017/appboot
-      connections-per-host: 20
-      min-connections-per-host: 20
-      option:
-        threads-allowed-to-block-for-connection-multiplier: 10
-        socket-timeout: 0
-        heartbeat-socket-timeout: 20000
-        heartbeat-connect-timeout: 20000
-        heartbeat-frequency: 10000
   # freemarker
   freemarker:
     enabled: true
@@ -51,8 +39,8 @@ spring:
     host: redis
     password: tencentcloud
     port: 6379
+    timeout: 10000
     jedis:
-      timeout: 10000
       pool:
         max-active: 10
         max-wait: -1
@@ -63,4 +51,21 @@ config:
   redis:
     enable: true
   upload:
-    path: D:/temp/dist
+    path: /data/oss-res
+    ossPath: /data/resource
+  mongodb:
+    host: 172.16.0.4
+    port: 27017
+    userName: appboot
+    password: baiduyun
+    dbName: appboot
+    option:
+      connections-per-host: 10
+      min-connections-per-host: 10
+      threads-allowed-to-block-for-connection-multiplier: 10
+      socket-timeout: 20000
+      connect-timeout: 20000
+      heartbeat-socket-timeout: 2000
+      heartbeat-connect-timeout: 2000
+      heartbeat-frequency: 10000
+      max-wait-time: 10000

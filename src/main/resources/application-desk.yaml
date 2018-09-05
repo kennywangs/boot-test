@@ -64,3 +64,4 @@ config:
     enable: true
   upload:
     path: D:/temp/dist
+    ossPath: D:/temp/osstest
