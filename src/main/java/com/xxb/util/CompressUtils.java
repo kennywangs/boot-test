@@ -130,9 +130,11 @@ public class CompressUtils {
 			zaos = new ZipArchiveOutputStream(bos);
 			// 解决文件名过长问题
 			zaos.setUseZip64(Zip64Mode.AsNeeded);
+			int len = srcDir.getParentFile().getAbsolutePath().length();
 			Collection<File> files = FileUtils.listFiles(srcDir, null, true);
 			for (File file : files) {
-				String fileName = file.getAbsolutePath().replace(srcPathname, "");
+				String fileName = file.getAbsolutePath().substring(len+1);
+//				String fileName = file.getAbsolutePath().replace(srcPathname, "");
 				zaos.putArchiveEntry(new ZipArchiveEntry(file, fileName));
 				fis = new FileInputStream(file);
 				IOUtils.copy(fis, zaos);
