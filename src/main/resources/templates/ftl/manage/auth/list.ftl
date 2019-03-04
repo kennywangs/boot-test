@@ -94,7 +94,7 @@
 									Page.authVm.auths.push(item);
 								});
 							}else{
-								Page.authVm.auths = data.data.content;
+								Page.authVm.auths = data.data;
 							}
 							if ((Page.no+1)<data.totalPages){
 								$('#load-more').show();

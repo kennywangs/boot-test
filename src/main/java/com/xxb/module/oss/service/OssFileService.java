@@ -55,6 +55,7 @@ public class OssFileService {
 		String uploadPath = env.getProperty("config.upload.ossPath");
 		String realFileName = UUID.randomUUID().toString();
 		File file = new File(uploadPath, realFileName);
+		file.mkdir();
 		bucket.setFilePath(file.getAbsolutePath());
 		bucket.setRealName(realFileName);
 		bucketRepo.save(bucket);
